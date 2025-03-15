@@ -9,7 +9,8 @@ class InputHandler:
     def get_keys(self):
         return self.keys
 
-    def handle_events(self, event, keys, tank):
+    def handle_events(self, tank):
+        keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             tank.rotate(-1)
         if keys[pygame.K_RIGHT]:

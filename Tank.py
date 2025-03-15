@@ -6,8 +6,14 @@ from config import *
 
 class Tank:
     def __init__(self, x, y, color):
+        self.health = TANK_HEALTH
+
         self.x = x
         self.y = y
+
+        self.prev_x = x
+        self.prev_y = y
+        
         self.angle = 0  # Angle in degrees
         self.speed = TANK_SPEED
         self.rotation_speed = TANK_ROTATION_SPEED
@@ -24,27 +30,49 @@ class Tank:
         self.surface_size = max(400, self.width * 2, self.height * 2)  # Bigger surface to fit everything
         self.surface = pygame.Surface((self.surface_size, self.surface_size), pygame.SRCALPHA)
         
+        # Center of the surface
+        self.center_x = self.surface_size // 2
+        self.center_y = self.surface_size // 2
+
+        # Bullet list
         self.bullets = []
+    
+
+    @property
+    def rect(self):
+        # Return a rect that encompasses both the tank body and turret
+        # This rect is used for collision detection
+        return pygame.Rect(
+            self.x - self.width//2,  # x position adjusted to center
+            self.y - self.height,    # y position adjusted to include turret
+            self.width,              # width of tank body
+            self.height * 2          # height of body + turret
+        )
+    
+    # Get the rects for the tank
+    def body_rect(self):
+        return pygame.Rect((self.center_x - self.width//2, self.center_y - self.height//2, 
+                         self.width, self.height))
+
+    # Get the rect for the turret
+    def turret_rect(self):
+        return pygame.Rect((self.center_x - self.width//6, self.center_y - self.height, 
+                         self.width//3, self.height))
 
     def draw(self, screen):
         # Clear the surface with transparent pixels before drawing
         self.surface.fill((0, 0, 0, 0))
         
         # Adjust drawing positions to center of the larger surface
-        center_x = self.surface_size // 2
-        center_y = self.surface_size // 2
+        
         
         # Draw tank body (centered)
-        pygame.draw.rect(self.surface, self.color, 
-                        (center_x - self.width//2, center_y - self.height//2, 
-                         self.width, self.height))
+        pygame.draw.rect(self.surface, self.color, self.body_rect())
         
         # Create separate surface for turret
         turret_surface = pygame.Surface((self.surface_size, self.surface_size), pygame.SRCALPHA)
         # Draw tank turret on separate surface
-        pygame.draw.rect(turret_surface, self.shooter_color, 
-                        (center_x - self.width//6, center_y - self.height, 
-                         self.width//3, self.height))
+        pygame.draw.rect(turret_surface, self.shooter_color, self.turret_rect())
         
         # Rotate turret separately
         rotated_turret = pygame.transform.rotate(turret_surface, -self.shooter_angle)
@@ -61,6 +89,8 @@ class Tank:
         screen.blit(rotated_turret, turret_rect)
         
     def move(self):
+        self.prev_x = self.x
+        self.prev_y = self.y
         # Convert angle to radians
         rad = math.radians(self.angle)
         
@@ -69,6 +99,8 @@ class Tank:
         self.y -= self.speed * math.cos(rad)
     
     def move_backward(self):
+        self.prev_x = self.x
+        self.prev_y = self.y
         # Convert angle to radians
         rad = math.radians(self.angle)
         
@@ -89,9 +121,32 @@ class Tank:
     def shoot(self):
         # Create a new ammo object
         if self.cooldown >= BULLET_COOLDOWN:
-            bullet = Bullet(self.x, self.y, self.shooter_angle - 90)
+            # Calculate bullet spawn position at end of turret
+            turret_length = self.turret_rect().height
+            spawn_x = self.x + turret_length * math.cos(math.radians(self.shooter_angle - 90))
+            spawn_y = self.y + turret_length * math.sin(math.radians(self.shooter_angle - 90))
+            
+            bullet = Bullet(spawn_x, spawn_y, self.shooter_angle - 90, self)
             self.bullets.append(bullet)
             self.cooldown = 0
             return bullet
     
 
+    def take_action(self, action):
+        if action == "move":
+            self.move()
+        elif action == "move_backward":
+            self.move_backward()
+        elif action == "rotate_clockwise":
+            self.rotate(1)
+        elif action == "rotate_counterclockwise":
+            self.rotate(-1)
+        elif action == "shoot":
+            self.shoot()
+        elif action == "rotate_shooter_clockwise":
+            self.rotate_shooter(1)
+        elif action == "rotate_shooter_counterclockwise":
+            self.rotate_shooter(-1)
+        else:
+            # print(f"Invalid action: {action}")
+            pass
