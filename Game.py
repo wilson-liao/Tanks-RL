@@ -27,10 +27,7 @@ class Game:
         # Create Objects
         self.player_tank = Tank(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2, (0, 150, 0))
         self.tanks.append(self.player_tank)
-
-        for i in range(NUMBER_OF_ENEMIES):
-            self.enemy_tank = Tank(100, 100, (150, 0, 0))
-            self.tanks.append(self.enemy_tank)
+        self.create_enemy_tanks()
         
 
         self.input_handler = InputHandler()
@@ -46,6 +43,35 @@ class Game:
         # Create Game State Handler
         self.game_state = GameState.MENU
         self.game_state_handler = GameStateHandler()
+
+
+    def create_enemy_tanks(self):
+        for i in range(NUMBER_OF_ENEMIES):
+            x = random.randint(0, WINDOW_WIDTH)
+            y = random.randint(0, WINDOW_HEIGHT)
+            while self.check_spawn_spot_occupied(x, y):
+                x = random.randint(0, WINDOW_WIDTH)
+                y = random.randint(0, WINDOW_HEIGHT)
+            self.enemy_tank = Tank(x, y, (150, 0, 0))
+            self.tanks.append(self.enemy_tank)
+
+
+    def check_spawn_spot_occupied(self, x, y):
+        width = 40
+        height = 60
+        surface_size = max(400, width * 2, height * 2)
+        center_x = x + surface_size // 2
+        center_y = y + surface_size // 2
+        
+        temp_rect = pygame.Rect((center_x - width//2, center_y - height//2, 
+                         width, height))
+        for tank in self.tanks:
+            if temp_rect.colliderect(tank.body_rect()):
+                return True
+        for wall in self.walls:
+            if temp_rect.colliderect(wall.rect):
+                return True
+        return False
 
 
     def run(self):

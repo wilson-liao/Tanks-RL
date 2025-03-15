@@ -10,7 +10,6 @@ def main():
     # Create a game instance
     game = Game()
 
-
     # Run the game 
     game.run()  
 
