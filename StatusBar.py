@@ -2,7 +2,7 @@ import pygame
 from config import *
 
 class StatusBar:
-    def __init__(self, placement):
+    def __init__(self, placement, player_tank):
         if placement == "top":
             self.x = 0 + WALL_THICKNESS
             self.y = 0 + WALL_THICKNESS
@@ -19,7 +19,7 @@ class StatusBar:
         self.y_offset = 25
 
         self.gameTime = 0
-        self.player_health = 10
+        self.player_health = player_tank.health
         self.player_score = 0
 
     def backGroundPanel(self):
@@ -32,6 +32,8 @@ class StatusBar:
         pygame.Rect(self.x, self.y, self.width, self.height)
 
     
+    def update(self, player_tank):
+        self.player_health = player_tank.health
 
     def draw(self, screen):
 

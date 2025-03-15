@@ -25,8 +25,8 @@ class Tank:
         self.cooldown = 0
         
         # Make surface much larger to accommodate the shooter
-        self.width = 40
-        self.height = 60
+        self.width = TANK_WIDTH
+        self.height = TANK_HEIGHT
         self.surface_size = max(400, self.width * 2, self.height * 2)  # Bigger surface to fit everything
         self.surface = pygame.Surface((self.surface_size, self.surface_size), pygame.SRCALPHA)
         
@@ -40,19 +40,19 @@ class Tank:
 
     @property
     def rect(self):
-        # Return a rect that encompasses both the tank body and turret
-        # This rect is used for collision detection
+        # Return a rect that matches the tank's visual representation more closely
         return pygame.Rect(
-            self.x - self.width//2,  # x position adjusted to center
-            self.y - self.height,    # y position adjusted to include turret
-            self.width,              # width of tank body
-            self.height * 2          # height of body + turret
+            self.x - self.width//2,     # Center the rect horizontally
+            self.y - self.height//2,    # Center the rect vertically
+            self.width,                 # Width of tank body
+            self.height                 # Height of tank body
         )
     
     # Get the rects for the tank
     def body_rect(self):
         return pygame.Rect((self.center_x - self.width//2, self.center_y - self.height//2, 
                          self.width, self.height))
+    
 
     # Get the rect for the turret
     def turret_rect(self):
@@ -116,6 +116,7 @@ class Tank:
 
     def rotate_shooter(self, direction):
         self.shooter_angle += self.shooter_rotation_speed * direction
+        self.shooter_angle = self.shooter_angle % 360
 
 
     def shoot(self):

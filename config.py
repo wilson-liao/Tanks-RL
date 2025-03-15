@@ -4,10 +4,12 @@ WINDOW_HEIGHT = 1000
 
 
 # Tank settings
-TANK_HEALTH = 3
+TANK_HEALTH = 100
 TANK_SPEED = 4
 TANK_ROTATION_SPEED = 4
-TANK_SHOOTER_ROTATION_SPEED = 4
+TANK_SHOOTER_ROTATION_SPEED = 2
+TANK_WIDTH = 40
+TANK_HEIGHT = 60
 
 # Actions 
 ACTIONS = ["move", "move_backward", "rotate_clockwise", "rotate_counterclockwise", 
@@ -18,7 +20,7 @@ ACTIONS = ["move", "move_backward", "rotate_clockwise", "rotate_counterclockwise
 BULLET_SIZE = 10
 BULLET_COLOR = (255, 0, 0)
 BULLET_COOLDOWN = 10
-BULLET_LIFETIME = 50
+BULLET_LIFETIME = 100
 BULLET_SPEED = 10
 
 # Wall settings
@@ -32,4 +34,4 @@ STATUS_BAR_HEIGHT = 10
 STATUS_BAR_BACKGROUND_COLOR = (255, 255, 255)
 
 # Enemy settings
-NUMBER_OF_ENEMIES = 2
+NUMBER_OF_ENEMIES = 1

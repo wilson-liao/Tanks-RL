@@ -6,28 +6,33 @@ from WallGenerator import WallGenerator
 from CollisionDetector import CollisionDetector
 from GameStateHandler import GameStateHandler, GameState
 from StatusBar import StatusBar
+from util import *
+from HeuristicBot import HeuristicBot
+from RandomBot import RandomBot
 import random
 
 class Game:
-    def __init__(self):
+    def __init__(self, mode = "heuristic"):
         pygame.init()
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption("Tank Game")
         self.game_state_handler = GameStateHandler()
         self.clock = pygame.time.Clock()
-
-        # Create Status Bar
-        self.status_bar = StatusBar(PLACEMENT)
+        self.mode = mode
 
         # Create a object groups
         self.tanks = []
         self.walls = []
         self.bullets = []
 
+
         # Create Objects
         self.player_tank = Tank(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2, (0, 150, 0))
         self.tanks.append(self.player_tank)
-        self.create_enemy_tanks()
+        self.create_enemy_tanks(mode)
+
+        # Create Status Bar
+        self.status_bar = StatusBar(PLACEMENT, self.player_tank)
         
 
         self.input_handler = InputHandler()
@@ -45,33 +50,23 @@ class Game:
         self.game_state_handler = GameStateHandler()
 
 
-    def create_enemy_tanks(self):
+    def create_enemy_tanks(self, mode = "heuristic"):
         for i in range(NUMBER_OF_ENEMIES):
             x = random.randint(0, WINDOW_WIDTH)
             y = random.randint(0, WINDOW_HEIGHT)
-            while self.check_spawn_spot_occupied(x, y):
+            while check_spawn_spot_occupied(x, y, self.tanks, self.walls):
                 x = random.randint(0, WINDOW_WIDTH)
                 y = random.randint(0, WINDOW_HEIGHT)
-            self.enemy_tank = Tank(x, y, (150, 0, 0))
+
+            if mode == "heuristic":
+                self.enemy_tank = HeuristicBot(self, x, y, (150, 0, 0))
+            elif mode == "random":
+                self.enemy_tank = RandomBot(self, x, y, (150, 0, 0))
+
+
             self.tanks.append(self.enemy_tank)
 
 
-    def check_spawn_spot_occupied(self, x, y):
-        width = 40
-        height = 60
-        surface_size = max(400, width * 2, height * 2)
-        center_x = x + surface_size // 2
-        center_y = y + surface_size // 2
-        
-        temp_rect = pygame.Rect((center_x - width//2, center_y - height//2, 
-                         width, height))
-        for tank in self.tanks:
-            if temp_rect.colliderect(tank.body_rect()):
-                return True
-        for wall in self.walls:
-            if temp_rect.colliderect(wall.rect):
-                return True
-        return False
 
 
     def run(self):
@@ -88,10 +83,12 @@ class Game:
             self.input_handler.handle_events(self.player_tank)
             for tank in self.tanks:
                 if tank != self.player_tank:
-                    tank.take_action(random.choice(ACTIONS))
+                    tank.take_action()
+
 
 
             # Update status bar
+            self.status_bar.update(self.player_tank)
             self.status_bar.draw(self.screen)
 
             # Draw walls
@@ -132,5 +129,29 @@ class Game:
         for tank in self.tanks:
             self.bullets.extend(tank.bullets)
 
-        
+    
 
+    # GAME API
+    def get_game_state(self):
+        return self.game_state
+    
+    def get_player_location(self):
+        return self.player_tank.x, self.player_tank.y
+
+    def get_enemy_locations(self):
+        enemy_locations = []    
+        for enemy in self.enemy_tanks:
+            enemy_locations.append((enemy.x, enemy.y))
+        return enemy_locations
+    
+    def get_bullet_info(self):
+        bullet_info = []
+        for bullet in self.bullets:
+            bullet_info.append((bullet.x, bullet.y, bullet.angle, bullet))
+        return bullet_info
+
+    def get_wall_info(self):
+        wall_info = []
+        for wall in self.walls:
+            wall_info.append((wall.x, wall.y, wall.width, wall.height))
+        return wall_info

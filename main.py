@@ -1,9 +1,4 @@
-import pygame
 from Game import Game
-
-# Initialize Pygame
-
-
 
 
 def main():
