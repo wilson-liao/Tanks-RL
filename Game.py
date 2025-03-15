@@ -115,7 +115,11 @@ class Game:
 
 
             # Check collisions
-            self.bullets, self.tanks, self.walls = self.collision_detector.check_all_collisions(self.tanks, self.walls, self.bullets)
+            self.bullets, self.tanks, self.walls, destroyed = self.collision_detector.check_all_collisions(self.tanks, self.walls, self.bullets)
+            if destroyed:
+                print("DESTROYED")
+                self.status_bar.player_score += 1
+
 
             # Update display
             pygame.display.flip()

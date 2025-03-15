@@ -70,37 +70,39 @@ class CollisionDetector:
                     key = self.get_collide_key(obj1, obj2)
                     handler = self.collision_handlers.get(key)
                     if handler:
-                        handler(obj1, obj2)
+                        return handler(obj1, obj2)
     
     def check_all_collisions(self, tanks, walls, bullets):
         self.update_objects(tanks, walls, bullets)
-
+        
+        destroyed = False
         self.check_collisions(self.tanks, self.walls)
         self.check_collisions(self.bullets, self.walls)
-        self.check_collisions(self.tanks, self.bullets)
+        destroyed = self.check_collisions(self.tanks, self.bullets)
         self.check_collisions(self.tanks, self.tanks)
         self.check_collisions(self.bullets, self.bullets)
 
-        return self.bullets, self.tanks, self.walls
+        return self.bullets, self.tanks, self.walls, destroyed
 
 
     def _CollisionHandler(self, obj1, obj2):
         key = self.get_collide_key(obj1, obj2)
         if key not in self.collision_handlers:
-            return
+            return False
         
         if any(isinstance(obj, self.tank_types) for obj in [obj1, obj2]) and "Wall" in key:
             print("Tank and Wall collision detected!!!")
             tank = obj1 if isinstance(obj1, self.tank_types) else obj2
             tank.x = tank.prev_x
             tank.y = tank.prev_y
+            return False
             
         elif any(isinstance(obj, self.tank_types) for obj in [obj1, obj2]) and "Bullet" in key:
             print("HIT")
             tank = obj1 if isinstance(obj1, self.tank_types) else obj2
             bullet = obj1 if isinstance(obj1, Bullet) else obj2
             if tank == bullet.tank:
-                return
+                return False
             
             tank.health -= 1
             if tank.health <= 0:
@@ -109,14 +111,16 @@ class CollisionDetector:
                     del tank
                 except:
                     print(f'Tank {tank} not found in tanks list')
+                return True
             
             try:
-                print("REMOVING BULLET")
                 self.bullets.remove(bullet)
                 bullet.tank.bullets.remove(bullet)
                 del bullet
             except:
                 print(f'Bullet {bullet} not found in bullets list')
+            return False
+            
                 
         elif all(isinstance(obj, self.tank_types) for obj in [obj1, obj2]):
             obj1.x = obj1.prev_x
@@ -124,6 +128,7 @@ class CollisionDetector:
             obj2.x = obj2.prev_x
             obj2.y = obj2.prev_y
             print("Tank and Tank collision detected")
+            return False
             
         elif "Bullet" in key and "Wall" in key:
             # print("Bullet and Wall collision detected")
@@ -135,40 +140,8 @@ class CollisionDetector:
             except:
                 print(f'Bullet {bullet} not found in bullets list')
 
-        elif "Tank" in key and "Bullet" in key:
-            print("HIT")
-            tank = obj1 if type(obj1).__name__ == "Tank" else obj2
-            bullet = obj1 if type(obj1).__name__ == "Bullet" else obj2
-            if tank == bullet.tank:
-                # print(f'Tank {tank} hit by its own bullet {bullet}')
-                return
-            
-            # print(f'Tank {tank} hit by bullet {bullet}')
+            return False
 
-            tank.health -= 1
-            if tank.health <= 0:
-                try:
-                    self.tanks.remove(tank)
-                    del tank
-                except:
-                    print(f'Tank {tank} not found in tanks list')
-            
-            try:
-                print("REMOVING BULLET")
-                self.bullets.remove(bullet)
-                bullet.tank.bullets.remove(bullet)
-                del bullet
-            except:
-                print(f'Bullet {bullet} not found in bullets list')
-
-            
-            
-        elif any(tank_type in key for tank_type in ["Tank", "HeuristicBot", "RandomBot"]) and any(tank_type in key for tank_type in ["Tank", "HeuristicBot", "RandomBot"]):
-            obj1.x = obj1.prev_x
-            obj1.y = obj1.prev_y
-            obj2.x = obj2.prev_x
-            obj2.y = obj2.prev_y
-            print("Tank and Tank collision detected")
             
         elif "Bullet" in key and "Bullet" in key:
             try:
@@ -180,7 +153,7 @@ class CollisionDetector:
                 del obj2
             except:
                 print(f'Bullet {obj1} or {obj2} not found in bullets list')
-            
+            return False
 
             # print("Bullet and Bullet collision detected")
         else:
