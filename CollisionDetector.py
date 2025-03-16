@@ -91,7 +91,7 @@ class CollisionDetector:
             return False
         
         if any(isinstance(obj, self.tank_types) for obj in [obj1, obj2]) and "Wall" in key:
-            print("Tank and Wall collision detected!!!")
+            # print("Tank and Wall collision detected!!!")
             tank = obj1 if isinstance(obj1, self.tank_types) else obj2
             tank.x = tank.prev_x
             tank.y = tank.prev_y
