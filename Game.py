@@ -139,6 +139,9 @@ class Game:
     def get_game_state(self):
         return self.game_state
     
+    def get_all_info(self):
+        return self.get_player_location(), self.get_enemy_locations(), self.get_bullet_info(), self.get_wall_info()
+    
     def get_player_location(self):
         return self.player_tank.x, self.player_tank.y
 

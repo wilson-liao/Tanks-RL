@@ -22,11 +22,11 @@ class HeuristicBot(Tank):
 
             # Every shot, change the angle
             self.move_angle = random.randint(0, 360)
-            print("SHOT, MOVING TOWARD", self.move_angle)
+            # print("SHOT, MOVING TOWARD", self.move_angle)
         else:
             if self.move_angle == None:
                 self.move_angle = random.randint(0, 360)
-            print("NOT SHOT, MOVING TOWARD", self.move_angle)
+            # print("NOT SHOT, MOVING TOWARD", self.move_angle)
             self.move_toward(self.move_angle)
 
 
@@ -47,7 +47,7 @@ class HeuristicBot(Tank):
             direction = 1   # Rotate clockwise
             
         # Rotate turret until aligned with player
-        if abs(self.shooter_angle - target_angle) > DEGREE_TOLERANCE:
+        if abs((self.shooter_angle - target_angle) % 360) > DEGREE_TOLERANCE:
             self.rotate_shooter(direction)
         else:
             # Once aligned, shoot
@@ -65,9 +65,7 @@ class HeuristicBot(Tank):
         else:
             direction = 1   # Rotate clockwise
 
-        # print(self.angle, target_angle)
-
-        if abs(self.angle - target_angle) > DEGREE_TOLERANCE:
+        if abs((self.angle - target_angle) % 360) > DEGREE_TOLERANCE:
             self.rotate(direction)
         else:
             self.move()

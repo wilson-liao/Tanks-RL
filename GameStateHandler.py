@@ -4,6 +4,10 @@ from enum import Enum
 class GameStateHandler:
     def __init__(self):
         self.game_state = GameState.MENU
+        self.game_info = {
+            "player_score": 0,
+            "player_health": 0,
+        }
         
 
     def update_game_state(self, tanks, player_tank):
