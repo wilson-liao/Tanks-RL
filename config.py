@@ -38,3 +38,7 @@ NUMBER_OF_ENEMIES = 1
 
 # Bot mode
 BOT_MODE = "heuristic" # "heuristic" or "random"
+
+
+#Training settings
+TRAIN_TIME_LIMIT = 1000000

@@ -115,25 +115,24 @@ class TankEnv(Env):
         )
 
         self.state = self.get_all_info()
-
+        self.train_time = 0
 
 
     def step(self, action):
+        self.train_time += 1
+        if self.train_time > TRAIN_TIME_LIMIT:
+            done = True
+        else:
+            done = False
 
         # Handle events
         self.game_state, running = self.game_state_handler.update_game_state(self.tanks, self.player_tank)
 
+        # Store previous position before movement
+        prev_x = self.player_tank.x
+        prev_y = self.player_tank.y
 
         # Convert action to game controls
-        # Convert numeric action to game control
-        # 0: Move forward
-        # 1: Rotate left 
-        # 2: Rotate right
-        # 3: Rotate turret left
-        # 4: Rotate turret right
-        # 5: Shoot
-        # 6: Idle
-        # 7: Move backward
         if action == 0:  # Move forward
             self.player_tank.move()
         elif action == 1:  # Move backward
@@ -150,12 +149,14 @@ class TankEnv(Env):
             self.player_tank.shoot()
         elif action == 7:  # Idle
             pass
-        print(f"Action: {action}")
+        # print(f"Action: {action}")
         
-        # Enemy moves
+        # Enemy moves with collision checking
         for tank in self.tanks:
             if tank != self.player_tank:
                 tank.take_action()
+                
+        
 
         # Update status bar
         self.status_bar.update(self.player_tank)
@@ -201,12 +202,12 @@ class TankEnv(Env):
         done = False
         # Player wins
         if len(self.tanks) == 1 and self.player_tank in self.tanks:
-            reward += 10
+            reward += 10 * self.player_tank.health
             done = True
 
         # Player dies/loses
         if self.player_tank.health <= 0:
-            reward -= 10
+            reward -= (10 * sum([i.health for i in self.tanks]) + 10 * (1-(self.train_time // TRAIN_TIME_LIMIT)))
             done = True
     
         info = {}

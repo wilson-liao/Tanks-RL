@@ -95,7 +95,6 @@ class CollisionDetector:
             tank = obj1 if isinstance(obj1, self.tank_types) else obj2
             tank.x = tank.prev_x
             tank.y = tank.prev_y
-            print(f"Tank {tank} moved back to ({tank.x}, {tank.y})")
             return False
             
         elif any(isinstance(obj, self.tank_types) for obj in [obj1, obj2]) and "Bullet" in key:

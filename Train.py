@@ -9,7 +9,7 @@ from keras.layers import Dense, Flatten
 from keras.optimizers import Adam
 
 from rl.agents import DQNAgent
-from rl.policy import BoltzmannQPolicy
+from rl.policy import BoltzmannQPolicy, LinearAnnealedPolicy, EpsGreedyQPolicy
 from rl.memory import SequentialMemory
 
 from config import *
@@ -34,7 +34,14 @@ def build_model(states, actions):
 
 
 def build_agent(model, actions):
-    policy = BoltzmannQPolicy()
+    policy = LinearAnnealedPolicy(
+        EpsGreedyQPolicy(),
+        attr='eps',
+        value_max=1.0,    # Start with 100% exploration
+        value_min=0.1,    # End with 10% exploration
+        value_test=0.05,  # Testing exploration rate
+        nb_steps=50000    # Number of steps for annealing
+    )
     memory = SequentialMemory(limit=50000, window_length=1)
     dqn = DQNAgent(model=model, memory=memory, policy=policy,
                    nb_actions=actions, nb_steps_warmup=100,
