@@ -20,7 +20,8 @@ EPISODES = 1000
 
 states = env.observation_space.shape
 actions = env.action_space.n
-print("Observation space shape:", env.observation_space.shape)
+
+
 
 def build_model(states, actions):
     model = Sequential()
@@ -28,13 +29,15 @@ def build_model(states, actions):
     model.add(Dense(24, activation='relu'))
     model.add(Dense(24, activation='relu'))
     model.add(Dense(actions, activation='linear'))
+    
     return model
+
 
 def build_agent(model, actions):
     policy = BoltzmannQPolicy()
     memory = SequentialMemory(limit=50000, window_length=1)
     dqn = DQNAgent(model=model, memory=memory, policy=policy,
-                   nb_actions=actions, nb_steps_warmup=10,
+                   nb_actions=actions, nb_steps_warmup=100,
                    target_model_update=1e-2)
     return dqn
 
@@ -42,10 +45,13 @@ def build_agent(model, actions):
 model = build_model(states, actions)
 # model.summary()
 dqn = build_agent(model, actions)
-dqn.compile(Adam(learning_rate=0.001))
+dqn.compile(Adam(learning_rate=0.01))
 
-# Train the agent 
-dqn.fit(env, nb_steps=10000, visualize=True, verbose=2)
+# Modify training parameters
+dqn.fit(env, nb_steps=50000, visualize=True, verbose=1)
+
+# Test with visualization
+dqn.test(env, nb_episodes=5, visualize=True)
 
 
 # Save the trained weights

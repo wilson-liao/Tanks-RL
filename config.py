@@ -35,3 +35,6 @@ STATUS_BAR_BACKGROUND_COLOR = (255, 255, 255)
 
 # Enemy settings
 NUMBER_OF_ENEMIES = 1
+
+# Bot mode
+BOT_MODE = "heuristic" # "heuristic" or "random"

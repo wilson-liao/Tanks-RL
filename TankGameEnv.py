@@ -18,7 +18,7 @@ import pygame
 
 
 class TankEnv(Env):
-    def __init__(self, mode = "heuristic"):
+    def __init__(self, mode = BOT_MODE):
         super().__init__()
         pygame.init()
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -150,6 +150,7 @@ class TankEnv(Env):
             self.player_tank.shoot()
         elif action == 7:  # Idle
             pass
+        print(f"Action: {action}")
         
         # Enemy moves
         for tank in self.tanks:
@@ -180,7 +181,6 @@ class TankEnv(Env):
         enemy_health_prev = {tank: tank.health for tank in self.tanks if tank != self.player_tank}
         self.bullets, self.tanks, self.walls, destroyed = self.collision_detector.check_all_collisions(self.tanks, self.walls, self.bullets)
         if destroyed:
-            print("DESTROYED")
             self.status_bar.player_score += 1
 
 
@@ -216,7 +216,7 @@ class TankEnv(Env):
         return self.state, reward, done, info
 
     
-    def reset(self, mode = "heuristic"):
+    def reset(self, mode = BOT_MODE):
         # self.game = Game()
         self.game_state_handler = GameStateHandler()
 
@@ -254,31 +254,53 @@ class TankEnv(Env):
         return self.state
     
 
-    def render(self):
-        # Clear screen
+    def render(self, mode='rgb_array'):
+        # Original render code
         self.screen.fill((200, 200, 200))
-
-        # Update status bar
         self.status_bar.draw(self.screen)
-
-        # Draw walls
         for wall in self.walls:
             wall.draw(self.screen)
-
-        # Update tanks
         for tank in self.tanks:
             tank.draw(self.screen)
-
-        # Update bullets
-        for tank in self.tanks:
             for bullet in tank.bullets:
-                    bullet.draw(self.screen)
-
-        # Update display
+                bullet.draw(self.screen)
         pygame.display.flip()
-        # Control frame rate
-        self.clock.tick(30)
+        self.clock.tick(60)
 
+
+    # def render2(self, mode='rgb_array'):
+    #     if mode == 'rgb_array':
+    #         # Get the pygame surface as a RGB array
+    #         self.screen.fill((200, 200, 200))
+
+    #         # Draw all game elements
+    #         self.status_bar.draw(self.screen)
+    #         for wall in self.walls:
+    #             wall.draw(self.screen)
+    #         for tank in self.tanks:
+    #             tank.draw(self.screen)
+    #             for bullet in tank.bullets:
+    #                 bullet.draw(self.screen)
+                
+    #         pygame.display.flip()
+    #         self.clock.tick(30)
+    #         return np.transpose(
+    #             np.array(pygame.surfarray.pixels3d(self.screen)), axes=(1, 0, 2)
+    #         )
+    #     elif mode == 'human':
+    #         # Original render code
+    #         self.screen.fill((200, 200, 200))
+    #         self.status_bar.draw(self.screen)
+    #         for wall in self.walls:
+    #             wall.draw(self.screen)
+    #         for tank in self.tanks:
+    #             tank.draw(self.screen)
+    #             for bullet in tank.bullets:
+    #                 bullet.draw(self.screen)
+    #         pygame.display.flip()
+    #         self.clock.tick(30)
+    #     else:
+    #         raise NotImplementedError(f"Render mode {mode} not implemented")
     
 
     ########### HELPER FUNCTIONS ###########
@@ -310,7 +332,57 @@ class TankEnv(Env):
         return self.game_state
     
     def get_all_info(self):
-        return self.get_player_location(), self.get_enemy_locations(), self.get_bullet_info(), self.get_wall_info()
+        # Instead of returning a tuple of different structures, create a flat numpy array
+        observation = np.zeros(self.observation_space.shape[0], dtype=np.float32)
+        
+        # Player position (2 values)
+        player_x, player_y = self.get_player_location()
+        observation[0] = player_x
+        observation[1] = player_y
+        
+        # Player angle (1 value)
+        observation[2] = self.player_tank.angle
+        
+        # Player shooter angle (1 value)
+        observation[3] = self.player_tank.shooter_angle
+        
+        # Enemy positions, angles, and shooter angles
+        enemy_locations = self.get_enemy_locations()
+        current_idx = 4
+        for i, (ex, ey) in enumerate(enemy_locations):
+            if i < NUMBER_OF_ENEMIES:  # Ensure we don't exceed the space allocated
+                observation[current_idx + i*2] = ex
+                observation[current_idx + i*2 + 1] = ey
+        
+        current_idx += NUMBER_OF_ENEMIES * 2
+        for i, enemy in enumerate(self.tanks):
+            if enemy != self.player_tank and i < NUMBER_OF_ENEMIES:
+                observation[current_idx + i] = enemy.angle
+        
+        current_idx += NUMBER_OF_ENEMIES
+        for i, enemy in enumerate(self.tanks):
+            if enemy != self.player_tank and i < NUMBER_OF_ENEMIES:
+                observation[current_idx + i] = enemy.shooter_angle
+        
+        # Bullet positions
+        current_idx += NUMBER_OF_ENEMIES
+        bullet_info = self.get_bullet_info()
+        for i, (bx, by, _, _) in enumerate(bullet_info):
+            if i < 30:  # max_bullets from your observation space definition
+                observation[current_idx + i*2] = bx
+                observation[current_idx + i*2 + 1] = by
+        
+        # Wall positions
+        current_idx += 30 * 2  # max_bullets * 2
+        wall_info = self.get_wall_info()
+        for i, (wx, wy, ww, wh) in enumerate(wall_info):
+            if i < 10:  # max_walls from your observation space definition
+                observation[current_idx + i*4] = wx
+                observation[current_idx + i*4 + 1] = wy
+                observation[current_idx + i*4 + 2] = ww
+                observation[current_idx + i*4 + 3] = wh
+        
+        return observation
     
     def get_player_location(self):
         return self.player_tank.x, self.player_tank.y

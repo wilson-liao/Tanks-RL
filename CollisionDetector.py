@@ -91,10 +91,11 @@ class CollisionDetector:
             return False
         
         if any(isinstance(obj, self.tank_types) for obj in [obj1, obj2]) and "Wall" in key:
-            # print("Tank and Wall collision detected!!!")
+            print("Tank and Wall collision detected!!!")
             tank = obj1 if isinstance(obj1, self.tank_types) else obj2
             tank.x = tank.prev_x
             tank.y = tank.prev_y
+            print(f"Tank {tank} moved back to ({tank.x}, {tank.y})")
             return False
             
         elif any(isinstance(obj, self.tank_types) for obj in [obj1, obj2]) and "Bullet" in key:
@@ -127,7 +128,7 @@ class CollisionDetector:
             obj1.y = obj1.prev_y
             obj2.x = obj2.prev_x
             obj2.y = obj2.prev_y
-            print("Tank and Tank collision detected")
+            # print("Tank and Tank collision detected")
             return False
             
         elif "Bullet" in key and "Wall" in key:
