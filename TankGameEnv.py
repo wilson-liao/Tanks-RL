@@ -75,13 +75,13 @@ class TankEnv(Env):
         # - Bullet positions (x, y for each bullet)
         # - Wall positions (x, y, width, height for each wall)
         # Calculate total size of observation space
-        max_bullets = 30
-        max_walls = 10
+        self.max_bullets = 10
+        self.max_walls = 4
         enemy_position_size = NUMBER_OF_ENEMIES * 2  # x,y for each enemy
         enemy_angle_size = NUMBER_OF_ENEMIES  # angle for each enemy
         enemy_shooter_size = NUMBER_OF_ENEMIES  # shooter angle for each enemy
-        bullet_position_size = max_bullets * 2  # x,y for max 100 bullets 
-        wall_position_size = max_walls * 4  # x,y,w,h for max 50 walls
+        bullet_position_size = self.max_bullets * 2  # x,y for max 100 bullets 
+        wall_position_size = self.max_walls * 4  # x,y,w,h for max 50 walls
         
         # Create low array
         low_array = np.array(
@@ -104,8 +104,8 @@ class TankEnv(Env):
             [WINDOW_WIDTH, WINDOW_HEIGHT] * NUMBER_OF_ENEMIES +  # Enemy positions
             [360] * NUMBER_OF_ENEMIES +  # Enemy angles  
             [360] * NUMBER_OF_ENEMIES + # Enemy shooter angles
-            [WINDOW_WIDTH, WINDOW_HEIGHT] * max_bullets +  # Bullet positions
-            [WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT] * max_walls,  # Wall positions
+            [WINDOW_WIDTH, WINDOW_HEIGHT] * self.max_bullets +  # Bullet positions
+            [WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT] * self.max_walls,  # Wall positions
             dtype=np.float32
         )
         self.observation_space = Box(
@@ -180,15 +180,15 @@ class TankEnv(Env):
         # Player hits enemy
         for tank in self.tanks:
             if tank != self.player_tank and tank.health < enemy_health_prev[tank]:
-                reward += 1
+                reward += 10
 
         # Player gets hit
         if player_health_prev > self.player_tank.health:
-            reward -= 1
+            reward -= 10
 
         # Player destroys enemy
         if destroyed:
-            reward += 5
+            reward += 50
 
         done = False
         # Player wins
@@ -209,7 +209,6 @@ class TankEnv(Env):
         if self.train_time > TRAIN_TIME_LIMIT:
             done = True
             self.train_time = 0
-
 
         return self.state, reward, done, info
 
@@ -366,15 +365,15 @@ class TankEnv(Env):
         current_idx += NUMBER_OF_ENEMIES
         bullet_info = self.get_bullet_info()
         for i, (bx, by, _, _) in enumerate(bullet_info):
-            if i < 30:  # max_bullets from your observation space definition
+            if i < self.max_bullets:  # max_bullets from your observation space definition
                 observation[current_idx + i*2] = bx
                 observation[current_idx + i*2 + 1] = by
         
         # Wall positions
-        current_idx += 30 * 2  # max_bullets * 2
+        current_idx += self.max_bullets * 2  # max_bullets * 2
         wall_info = self.get_wall_info()
         for i, (wx, wy, ww, wh) in enumerate(wall_info):
-            if i < 10:  # max_walls from your observation space definition
+            if i < self.max_walls:  # max_walls from your observation space definition
                 observation[current_idx + i*4] = wx
                 observation[current_idx + i*4 + 1] = wy
                 observation[current_idx + i*4 + 2] = ww

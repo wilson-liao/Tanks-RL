@@ -19,7 +19,7 @@ ACTIONS = ["move", "move_backward", "rotate_clockwise", "rotate_counterclockwise
 # Bullet settings
 BULLET_SIZE = 10
 BULLET_COLOR = (255, 0, 0)
-BULLET_COOLDOWN = 50
+BULLET_COOLDOWN = 100
 BULLET_LIFETIME = 100
 BULLET_SPEED = 10
 

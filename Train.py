@@ -36,15 +36,15 @@ def build_model(states, actions):
 
 
 def build_agent(model, actions):
-    # policy = LinearAnnealedPolicy(
-    #     EpsGreedyQPolicy(),
-    #     attr='eps',
-    #     value_max=1.0,    # Start with 100% exploration
-    #     value_min=0.1,    # End with 10% exploration
-    #     value_test=0.05,  # Testing exploration rate
-    #     nb_steps=50000    # Number of steps for annealing
-    # )
-    policy = BoltzmannQPolicy(tau=0.01)
+    policy = LinearAnnealedPolicy(
+        EpsGreedyQPolicy(),
+        attr='eps',
+        value_max=1.0,    # Start with 100% exploration
+        value_min=0.1,    # End with 10% exploration
+        value_test=0.05,  # Testing exploration rate
+        nb_steps=50000    # Number of steps for annealing
+    )
+    # policy = BoltzmannQPolicy(tau=0.01)
     memory = SequentialMemory(limit=5000000, window_length=1)
     dqn = DQNAgent(model=model, memory=memory, policy=policy,
                    nb_actions=actions, nb_steps_warmup=100,

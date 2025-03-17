@@ -12,7 +12,7 @@ from RandomBot import RandomBot
 import random
 
 class Game:
-    def __init__(self, mode = "heuristic"):
+    def __init__(self, mode = BOT_MODE):
         pygame.init()
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         pygame.display.set_caption("Tank Game")
@@ -50,7 +50,7 @@ class Game:
         self.game_state_handler = GameStateHandler()
 
 
-    def create_enemy_tanks(self, mode = "heuristic"):
+    def create_enemy_tanks(self, mode = BOT_MODE):
         for i in range(NUMBER_OF_ENEMIES):
             x = random.randint(0, WINDOW_WIDTH)
             y = random.randint(0, WINDOW_HEIGHT)

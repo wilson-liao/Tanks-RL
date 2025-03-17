@@ -82,7 +82,7 @@ class CollisionDetector:
         self.check_collisions(self.bullets, self.walls)
         destroyed = self.check_collisions(self.tanks, self.bullets)
         self.check_collisions(self.tanks, self.tanks)
-        self.check_collisions(self.bullets, self.bullets)
+        # self.check_collisions(self.bullets, self.bullets)
         for tank in self.tanks:
             self.check_inbounds(tank)
 
@@ -147,17 +147,17 @@ class CollisionDetector:
             return False
 
             
-        elif "Bullet" in key and "Bullet" in key:
-            try:
-                self.bullets.remove(obj1)
-                obj1.tank.bullets.remove(obj1)
-                self.bullets.remove(obj2)   
-                obj2.tank.bullets.remove(obj2)
-                del obj1
-                del obj2
-            except:
-                print(f'Bullet {obj1} or {obj2} not found in bullets list')
-            return False
+        # elif "Bullet" in key and "Bullet" in key:
+        #     try:
+        #         self.bullets.remove(obj1)
+        #         obj1.tank.bullets.remove(obj1)
+        #         self.bullets.remove(obj2)   
+        #         obj2.tank.bullets.remove(obj2)
+        #         del obj1
+        #         del obj2
+        #     except:
+        #         print(f'Bullet {obj1} or {obj2} not found in bullets list')
+        #     return False
 
             # print("Bullet and Bullet collision detected")
         else:

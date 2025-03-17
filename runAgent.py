@@ -50,7 +50,6 @@ def build_agent(model, actions):
 
 
 model = build_model(states, actions)
-# model.summary()
 dqn = build_agent(model, actions)
 dqn.compile(Adam(learning_rate=0.01))
 
