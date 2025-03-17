@@ -4,6 +4,8 @@ from WallGenerator import Wall
 from Bullet import Bullet
 from HeuristicBot import HeuristicBot
 from RandomBot import RandomBot
+from config import WINDOW_WIDTH, WINDOW_HEIGHT
+
 '''
 Types of collisions:
     Tank and Wall
@@ -81,6 +83,8 @@ class CollisionDetector:
         destroyed = self.check_collisions(self.tanks, self.bullets)
         self.check_collisions(self.tanks, self.tanks)
         self.check_collisions(self.bullets, self.bullets)
+        for tank in self.tanks:
+            self.check_inbounds(tank)
 
         return self.bullets, self.tanks, self.walls, destroyed
 
@@ -91,14 +95,14 @@ class CollisionDetector:
             return False
         
         if any(isinstance(obj, self.tank_types) for obj in [obj1, obj2]) and "Wall" in key:
-            print("Tank and Wall collision detected!!!")
+            # print("Tank and Wall collision detected!!!")
             tank = obj1 if isinstance(obj1, self.tank_types) else obj2
             tank.x = tank.prev_x
             tank.y = tank.prev_y
             return False
             
         elif any(isinstance(obj, self.tank_types) for obj in [obj1, obj2]) and "Bullet" in key:
-            print("HIT")
+            # print("HIT")
             tank = obj1 if isinstance(obj1, self.tank_types) else obj2
             bullet = obj1 if isinstance(obj1, Bullet) else obj2
             if tank == bullet.tank:
@@ -160,3 +164,17 @@ class CollisionDetector:
             self.collision_handlers.pop(key)
             # print("Collision does not exist between", type(obj1).__name__, "and", type(obj2).__name__)
 
+    def check_inbounds(self, tank):
+        # Check x boundaries
+        if tank.x < 0:
+            tank.x = 1
+        elif tank.x > WINDOW_WIDTH:
+            tank.x = WINDOW_WIDTH - 1
+            
+        # Check y boundaries
+        if tank.y < 0:
+            tank.y = 1
+        elif tank.y > WINDOW_HEIGHT:
+            tank.y = WINDOW_HEIGHT - 1
+
+    

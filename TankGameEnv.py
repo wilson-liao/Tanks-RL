@@ -119,18 +119,9 @@ class TankEnv(Env):
 
 
     def step(self, action):
-        self.train_time += 1
-        if self.train_time > TRAIN_TIME_LIMIT:
-            done = True
-        else:
-            done = False
-
         # Handle events
         self.game_state, running = self.game_state_handler.update_game_state(self.tanks, self.player_tank)
 
-        # Store previous position before movement
-        prev_x = self.player_tank.x
-        prev_y = self.player_tank.y
 
         # Convert action to game controls
         if action == 0:  # Move forward
@@ -213,6 +204,12 @@ class TankEnv(Env):
         info = {}
 
         self.state = self.get_all_info()
+
+        self.train_time += 1
+        if self.train_time > TRAIN_TIME_LIMIT:
+            done = True
+            self.train_time = 0
+
 
         return self.state, reward, done, info
 

@@ -41,4 +41,4 @@ BOT_MODE = "heuristic" # "heuristic" or "random"
 
 
 #Training settings
-TRAIN_TIME_LIMIT = 1000000
+TRAIN_TIME_LIMIT = 5000
