@@ -178,3 +178,8 @@ class CollisionDetector:
             tank.y = WINDOW_HEIGHT - 1
 
     
+    def check_wall_collision(self, tank):
+        for wall in self.walls:
+            if self.check_collision(tank, wall):
+                return True
+        return False

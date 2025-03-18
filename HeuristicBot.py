@@ -23,11 +23,11 @@ class HeuristicBot(Tank):
             # Every shot, change the angle
             self.move_angle = random.randint(0, 360)
             # print("SHOT, MOVING TOWARD", self.move_angle)
-        # else:
-        #     if self.move_angle == None:
-        #         self.move_angle = random.randint(0, 360)
-        #     # print("NOT SHOT, MOVING TOWARD", self.move_angle)
-        #     self.move_toward(self.move_angle)
+        else:
+            if self.move_angle == None:
+                self.move_angle = random.randint(0, 360)
+            # print("NOT SHOT, MOVING TOWARD", self.move_angle)
+            self.move_toward(self.move_angle)
 
 
     def calculate_player_angle(self, player_position):

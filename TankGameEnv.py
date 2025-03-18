@@ -70,21 +70,18 @@ class TankEnv(Env):
         # - Player angle
         # - Player shooter angle
         # - Player health
+        # - Player cooldown
         # - Enemy positions (x, y for each enemy)
-        # - Enemy angles
-        # - Enemy shooter angles
         # - Enemy health
+        # - Enemy cooldowns
         # - Bullet positions (x, y for each bullet)
-        # - Wall positions (x, y, width, height for each wall)
-        # Calculate total size of observation space
+        # - Bullet distances to player (distance for each bullet)
         self.max_bullets = 10
-        self.max_walls = 4
         enemy_position_size = NUMBER_OF_ENEMIES * 2  # x,y for each enemy
-        enemy_angle_size = NUMBER_OF_ENEMIES  # angle for each enemy
-        enemy_shooter_size = NUMBER_OF_ENEMIES  # shooter angle for each enemy
         enemy_health_size = NUMBER_OF_ENEMIES  # health for each enemy
-        bullet_position_size = self.max_bullets * 2  # x,y for max 100 bullets 
-        wall_position_size = self.max_walls * 4  # x,y,w,h for max 50 walls
+        enemy_cooldown_size = NUMBER_OF_ENEMIES  # cooldown for each enemy
+        bullet_position_size = self.max_bullets * 2  # x,y for bullets
+        bullet_distance_size = self.max_bullets  # distance to player for each bullet
         
         # Create low array
         low_array = np.array(
@@ -92,12 +89,12 @@ class TankEnv(Env):
             [0] +     # Player angle
             [0] +     # Player shooter angle
             [0] +     # Player health
+            [0] +     # Player cooldown
             [0] * enemy_position_size +  # Enemy positions
-            [0] * enemy_angle_size +     # Enemy angles
-            [0] * enemy_shooter_size +   # Enemy shooter angles
             [0] * enemy_health_size +    # Enemy health
-            [0] * bullet_position_size + # Bullet positions
-            [0] * wall_position_size,    # Wall positions
+            [0] * enemy_cooldown_size +  # Enemy cooldowns
+            [0] * bullet_position_size +  # Bullet positions
+            [0] * bullet_distance_size,  # Bullet distances to player
             dtype=np.float32
         )
         
@@ -106,13 +103,13 @@ class TankEnv(Env):
             [WINDOW_WIDTH, WINDOW_HEIGHT] +  # Player position
             [360] +       # Player angle
             [360] +       # Player shooter angle
-            [TANK_HEALTH] +       # Player health
+            [TANK_HEALTH] +  # Player health
+            [BULLET_COOLDOWN] +  # Player cooldown
             [WINDOW_WIDTH, WINDOW_HEIGHT] * NUMBER_OF_ENEMIES +  # Enemy positions
-            [360] * NUMBER_OF_ENEMIES +  # Enemy angles  
-            [360] * NUMBER_OF_ENEMIES +  # Enemy shooter angles
             [TANK_HEALTH] * NUMBER_OF_ENEMIES +  # Enemy health
+            [BULLET_COOLDOWN] * NUMBER_OF_ENEMIES +  # Enemy cooldowns
             [WINDOW_WIDTH, WINDOW_HEIGHT] * self.max_bullets +  # Bullet positions
-            [WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT] * self.max_walls,  # Wall positions
+            [np.sqrt(WINDOW_WIDTH**2 + WINDOW_HEIGHT**2)] * self.max_bullets,  # Bullet distances to player (max diagonal distance)
             dtype=np.float32
         )
         self.observation_space = Box(
@@ -129,6 +126,8 @@ class TankEnv(Env):
         # Handle events
         self.game_state, running = self.game_state_handler.update_game_state(self.tanks, self.player_tank)
 
+        # Store player bullet positions before action for reward calculation
+        player_bullets_before = [(bullet.x, bullet.y) for bullet in self.player_tank.bullets]
 
         # Convert action to game controls
         if action == 0:  # Move forward
@@ -175,6 +174,13 @@ class TankEnv(Env):
                     bullet.move()
         self.update_objects()
 
+
+        reward = 0.1
+        # Wall collision penalty
+        # if self.collision_detector.check_wall_collision(self.player_tank):
+        #     reward -= 10
+
+
         # Check collisions
         player_health_prev = self.player_tank.health
         enemy_health_prev = {tank: tank.health for tank in self.tanks if tank != self.player_tank}
@@ -183,34 +189,45 @@ class TankEnv(Env):
             self.status_bar.player_score += 1
 
 
-        reward = 0
+        # # Encourage player to move
+        # if self.player_tank.prev_x == self.player_tank.x and self.player_tank.prev_y == self.player_tank.y:
+        #     reward -= 1
+
         # Player hits enemy (scaled from 50 to 0.5)
         for tank in self.tanks:
             if tank != self.player_tank and tank.health < enemy_health_prev[tank]:
-                reward += 0.5
+                reward += 50
 
         # Player gets hit (scaled from -50 to -0.5)
         if player_health_prev > self.player_tank.health:
-            reward -= 0.5
+            reward -= 50
 
         # Player destroys enemy (scaled from 50 to 1.0)
         if destroyed:
-            reward += 1.0
+            reward += 10
+            
+        # Reward for bullet trajectory alignment with enemy tanks
+        # reward = self.add_trajectory_reward(player_bullets_before, reward)
 
         done = False
         # Player wins (scaled reward based on remaining health)
         if len(self.tanks) == 1 and self.player_tank in self.tanks:
+            time_factor = 1 - (self.train_time / TRAIN_TIME_LIMIT)  # Higher reward for winning faster
+            reward += 1.0 * time_factor  # Additional win reward scaled by time taken
             reward += self.player_tank.health / TANK_HEALTH  # Normalized between 0 and 1
             done = True
+            self.train_time = 0
 
         # Player dies/loses (scaled punishment based on remaining enemy health)
         if self.player_tank.health <= 0:
             total_enemy_health = sum([i.health for i in self.tanks])
-            reward -= total_enemy_health / (TANK_HEALTH * NUMBER_OF_ENEMIES)  # Normalized between 0 and 1
+            survival_factor = self.train_time / TRAIN_TIME_LIMIT  # Normalize survival time between 0 and 1
+            reward -= (total_enemy_health / (TANK_HEALTH * NUMBER_OF_ENEMIES)) * (1 - survival_factor)  # Less penalty the longer it survives
             done = True
+            self.train_time = 0
 
         # Clip final reward to stay within [-1, 1] range
-        reward = np.clip(reward, -1.0, 1.0)
+        # reward = np.clip(reward, -1.0, 1.0)
 
         info = {}
 
@@ -286,13 +303,13 @@ class TankEnv(Env):
 
     def create_enemy_tanks(self, mode = "heuristic"):
         for i in range(NUMBER_OF_ENEMIES):
-            # x = random.randint(0, WINDOW_WIDTH)
-            # y = random.randint(0, WINDOW_HEIGHT)
+            # x = random.randint(30, WINDOW_WIDTH - 30)
+            # y = random.randint(30, WINDOW_HEIGHT - 30)
             x = 100
             y = 100
             while check_spawn_spot_occupied(x, y, self.tanks, self.walls):
-                x = random.randint(0, WINDOW_WIDTH)
-                y = random.randint(0, WINDOW_HEIGHT)
+                x = random.randint(30, WINDOW_WIDTH - 30)
+                y = random.randint(30, WINDOW_HEIGHT - 30)
 
             if mode == "heuristic":
                 self.enemy_tank = HeuristicBot(self, x, y, (150, 0, 0))
@@ -324,10 +341,13 @@ class TankEnv(Env):
 
         # Player health (1 value)
         observation[4] = self.player_tank.health
+
+        # Player cooldown (1 value)
+        observation[5] = self.player_tank.cooldown
         
-        # Enemy positions, angles, shooter angles, and health
+        # Enemy positions, health, and cooldowns
         enemy_locations = self.get_enemy_locations()
-        current_idx = 5  # Updated starting index
+        current_idx = 6
         for i, (ex, ey) in enumerate(enemy_locations):
             if i < NUMBER_OF_ENEMIES:
                 observation[current_idx + i*2] = ex
@@ -336,35 +356,28 @@ class TankEnv(Env):
         current_idx += NUMBER_OF_ENEMIES * 2
         for i, enemy in enumerate(self.tanks):
             if enemy != self.player_tank and i < NUMBER_OF_ENEMIES:
-                observation[current_idx + i] = enemy.angle
-        
-        current_idx += NUMBER_OF_ENEMIES
-        for i, enemy in enumerate(self.tanks):
-            if enemy != self.player_tank and i < NUMBER_OF_ENEMIES:
-                observation[current_idx + i] = enemy.shooter_angle
+                observation[current_idx + i] = enemy.health
 
         current_idx += NUMBER_OF_ENEMIES
         for i, enemy in enumerate(self.tanks):
             if enemy != self.player_tank and i < NUMBER_OF_ENEMIES:
-                observation[current_idx + i] = enemy.health
+                observation[current_idx + i] = enemy.cooldown
         
         # Bullet positions
         current_idx += NUMBER_OF_ENEMIES
-        bullet_info = self.get_bullet_info()
-        for i, (bx, by, _, _) in enumerate(bullet_info):
+        enemy_bullet_info = self.get_enemy_bullet_info()
+        for i, (bx, by, _, _) in enumerate(enemy_bullet_info):
             if i < self.max_bullets:
                 observation[current_idx + i*2] = bx
                 observation[current_idx + i*2 + 1] = by
         
-        # Wall positions
+        # Bullet distances to player
         current_idx += self.max_bullets * 2
-        wall_info = self.get_wall_info()
-        for i, (wx, wy, ww, wh) in enumerate(wall_info):
-            if i < self.max_walls:
-                observation[current_idx + i*4] = wx
-                observation[current_idx + i*4 + 1] = wy
-                observation[current_idx + i*4 + 2] = ww
-                observation[current_idx + i*4 + 3] = wh
+        for i, (bx, by, _, _) in enumerate(enemy_bullet_info):
+            if i < self.max_bullets:
+                # Calculate Euclidean distance between bullet and player
+                distance = np.sqrt((bx - player_x)**2 + (by - player_y)**2)
+                observation[current_idx + i] = distance
         
         return observation
     
@@ -378,14 +391,65 @@ class TankEnv(Env):
                 enemy_locations.append((enemy.x, enemy.y))
         return enemy_locations
     
-    def get_bullet_info(self):
+    def get_all_bullet_info(self):
         bullet_info = []
         for bullet in self.bullets:
             bullet_info.append((bullet.x, bullet.y, bullet.angle, bullet))
         return bullet_info
+    
+    def get_enemy_bullet_info(self):
+        enemy_bullet_info = []
+        for bullet in self.bullets:
+            if bullet.tank != self.player_tank:
+                enemy_bullet_info.append((bullet.x, bullet.y, bullet.angle, bullet))
+        return enemy_bullet_info
 
     def get_wall_info(self):
         wall_info = []
         for wall in self.walls:
             wall_info.append((wall.x, wall.y, wall.width, wall.height))
         return wall_info
+
+    def add_trajectory_reward(self, bullets_before, reward):
+        """Add reward based on how close bullets are to the line connecting player to enemies"""
+        player_x, player_y = self.player_tank.x, self.player_tank.y
+        
+        # Get current bullets to compare with previous positions
+        current_bullets = [(bullet.x, bullet.y) for bullet in self.player_tank.bullets]
+        
+        # Only consider bullets that existed before and still exist (weren't destroyed)
+        for bullet_pos in bullets_before:
+            if bullet_pos in current_bullets:
+                continue
+                
+            # For each enemy, calculate distance from bullet to player-enemy line
+            for tank in self.tanks:
+                if tank == self.player_tank:
+                    continue
+                    
+                # Calculate distance from bullet to line connecting player and enemy
+                distance = self.point_to_line_distance(
+                    bullet_pos[0], bullet_pos[1],  # Bullet position
+                    player_x, player_y,            # Player position
+                    tank.x, tank.y                 # Enemy position
+                )
+                
+                # Reward inversely proportional to distance (closer = better)
+                # Normalize by window diagonal to keep reward in reasonable range
+                max_distance = np.sqrt(WINDOW_WIDTH**2 + WINDOW_HEIGHT**2)
+                alignment_reward = 0.2 * (0.5 - min(distance, max_distance) / max_distance)
+                reward += alignment_reward
+        
+        return reward
+    
+    def point_to_line_distance(self, px, py, x1, y1, x2, y2):
+        """Calculate the distance from point (px,py) to line defined by points (x1,y1) and (x2,y2)"""
+        # Line length
+        line_length = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+        
+        # If line has zero length, return distance to the point
+        if line_length == 0:
+            return np.sqrt((px - x1)**2 + (py - y1)**2)
+        
+        # Calculate the distance using the formula for point-to-line distance
+        return abs((y2 - y1) * px - (x2 - x1) * py + x2 * y1 - y2 * x1) / line_length

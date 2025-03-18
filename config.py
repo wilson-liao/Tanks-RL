@@ -4,7 +4,7 @@ WINDOW_HEIGHT = 1000
 
 
 # Tank settings
-TANK_HEALTH = 3
+TANK_HEALTH = 10
 TANK_SPEED = 4
 TANK_ROTATION_SPEED = 4
 TANK_SHOOTER_ROTATION_SPEED = 2
@@ -42,7 +42,7 @@ BOT_MODE = "heuristic" # "heuristic" or "random"
 
 #Training settings
 TRAIN_TIME_LIMIT = 5000
-EPISODES = 50000
+EPISODES = 1000000
 LEARNING_RATE = 0.001
 
 # Testing settings

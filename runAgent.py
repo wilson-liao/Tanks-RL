@@ -51,9 +51,9 @@ def build_agent(model, actions):
 
 model = build_model(states, actions)
 dqn = build_agent(model, actions)
-dqn.compile(Adam(learning_rate=0.01))
+dqn.compile(Adam(learning_rate=LEARNING_RATE))
 
 # Later, to load and test:
-dqn.load_weights('dqn_best_weights_stationary_bot.h5f')
-test_scores = dqn.test(env, nb_episodes=10, visualize=True)
+dqn.load_weights('dqn_best_weights_heuristic_bot.h5f')
+test_scores = dqn.test(env, nb_episodes=TEST_EPISODES, visualize=True)
 print(test_scores)
