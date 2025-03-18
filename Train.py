@@ -53,7 +53,7 @@ def build_agent(model, actions):
     # policy = BoltzmannQPolicy(tau=0.5)
     # policy = EpsGreedyQPolicy(eps=0.1)
     
-    memory = SequentialMemory(limit=100000, window_length=1)  # Larger memory
+    memory = SequentialMemory(limit=1000000, window_length=1)  # Larger memory
     dqn = DQNAgent(model=model, memory=memory, policy=policy,
                    nb_actions=actions, nb_steps_warmup=2000,  # More warmup steps
                    target_model_update=1e-2,
