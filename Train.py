@@ -13,7 +13,6 @@ from rl.policy import BoltzmannQPolicy, LinearAnnealedPolicy, EpsGreedyQPolicy
 from rl.memory import SequentialMemory
 from rl.callbacks import Callback
 import signal
-import sys
 
 from config import *
 from TankGameEnv import TankEnv
@@ -24,12 +23,13 @@ states = env.observation_space.shape
 actions = env.action_space.n
 
 
-
 def build_model(states, actions):
     model = Sequential()
     model.add(Flatten(input_shape=(1,) + states))
-    model.add(Dense(24, activation='relu'))
-    model.add(Dense(24, activation='relu'))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dense(32, activation='relu'))
     model.add(Dense(actions, activation='linear'))
     
     return model
@@ -42,20 +42,21 @@ def build_agent(model, actions):
         value_max=1.0,    # Start with 100% exploration
         value_min=0.1,    # End with 10% exploration
         value_test=0.05,  # Testing exploration rate
-        nb_steps=50000    # Number of steps for annealing
+        nb_steps=EPISODES    # Number of steps for annealing
     )
     # policy = BoltzmannQPolicy(tau=0.01)
-    memory = SequentialMemory(limit=5000000, window_length=1)
+    memory = SequentialMemory(limit=500000, window_length=1)
     dqn = DQNAgent(model=model, memory=memory, policy=policy,
                    nb_actions=actions, nb_steps_warmup=100,
-                   target_model_update=1e-2)
+                   target_model_update=1e-2,
+                   enable_double_dqn=True)  # Enable Double DQN
     return dqn
 
 
 model = build_model(states, actions)
 # model.summary()
 dqn = build_agent(model, actions)
-dqn.compile(Adam(learning_rate=0.01))
+dqn.compile(Adam(learning_rate=LEARNING_RATE))
 
 # Custom callback to save best weights and handle interruption
 class TrainingCallback(Callback):
@@ -74,7 +75,7 @@ class TrainingCallback(Callback):
         episode_reward = logs.get('episode_reward')
         if episode_reward > self.best_reward:
             self.best_reward = episode_reward
-            self.model.save_weights('dqn_best_weights.h5f', overwrite=True)
+            self.model.save_weights('dqn_best_weights_stationary_bot.h5f', overwrite=True)
             print(f'\nNew best reward: {self.best_reward:.2f} - Saved weights')
         
         if self.interrupted:
@@ -84,11 +85,11 @@ class TrainingCallback(Callback):
 training_callback = TrainingCallback()
 
 # Modify training parameters
-dqn.fit(env, nb_steps=5000000, visualize=True, verbose=1, callbacks=[training_callback])
+dqn.fit(env, nb_steps=EPISODES, visualize=True, verbose=1, callbacks=[training_callback])
 
 # Test with visualization (now using best weights)
-dqn.load_weights('dqn_best_weights.h5f')
-test_scores = dqn.test(env, nb_episodes=5, visualize=True)
+dqn.load_weights('dqn_best_weights_stationary_bot.h5f')
+test_scores = dqn.test(env, nb_episodes=TEST_EPISODES, visualize=True)
 print(test_scores)
 
 

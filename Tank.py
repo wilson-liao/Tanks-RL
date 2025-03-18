@@ -127,7 +127,7 @@ class Tank:
             spawn_x = self.x + turret_length * math.cos(math.radians(self.shooter_angle - 90))
             spawn_y = self.y + turret_length * math.sin(math.radians(self.shooter_angle - 90))
             
-            bullet = Bullet(spawn_x, spawn_y, self.shooter_angle - 90, self)
+            bullet = Bullet(spawn_x, spawn_y, self.shooter_angle - 90, self, self.color)
             self.bullets.append(bullet)
             self.cooldown = 0
             return bullet

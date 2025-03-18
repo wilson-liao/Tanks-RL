@@ -69,9 +69,11 @@ class TankEnv(Env):
         # - Player position (x, y)
         # - Player angle
         # - Player shooter angle
+        # - Player health
         # - Enemy positions (x, y for each enemy)
         # - Enemy angles
         # - Enemy shooter angles
+        # - Enemy health
         # - Bullet positions (x, y for each bullet)
         # - Wall positions (x, y, width, height for each wall)
         # Calculate total size of observation space
@@ -80,6 +82,7 @@ class TankEnv(Env):
         enemy_position_size = NUMBER_OF_ENEMIES * 2  # x,y for each enemy
         enemy_angle_size = NUMBER_OF_ENEMIES  # angle for each enemy
         enemy_shooter_size = NUMBER_OF_ENEMIES  # shooter angle for each enemy
+        enemy_health_size = NUMBER_OF_ENEMIES  # health for each enemy
         bullet_position_size = self.max_bullets * 2  # x,y for max 100 bullets 
         wall_position_size = self.max_walls * 4  # x,y,w,h for max 50 walls
         
@@ -88,9 +91,11 @@ class TankEnv(Env):
             [0, 0] +  # Player position
             [0] +     # Player angle
             [0] +     # Player shooter angle
+            [0] +     # Player health
             [0] * enemy_position_size +  # Enemy positions
             [0] * enemy_angle_size +     # Enemy angles
             [0] * enemy_shooter_size +   # Enemy shooter angles
+            [0] * enemy_health_size +    # Enemy health
             [0] * bullet_position_size + # Bullet positions
             [0] * wall_position_size,    # Wall positions
             dtype=np.float32
@@ -101,9 +106,11 @@ class TankEnv(Env):
             [WINDOW_WIDTH, WINDOW_HEIGHT] +  # Player position
             [360] +       # Player angle
             [360] +       # Player shooter angle
+            [TANK_HEALTH] +       # Player health
             [WINDOW_WIDTH, WINDOW_HEIGHT] * NUMBER_OF_ENEMIES +  # Enemy positions
             [360] * NUMBER_OF_ENEMIES +  # Enemy angles  
-            [360] * NUMBER_OF_ENEMIES + # Enemy shooter angles
+            [360] * NUMBER_OF_ENEMIES +  # Enemy shooter angles
+            [TANK_HEALTH] * NUMBER_OF_ENEMIES +  # Enemy health
             [WINDOW_WIDTH, WINDOW_HEIGHT] * self.max_bullets +  # Bullet positions
             [WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT] * self.max_walls,  # Wall positions
             dtype=np.float32
@@ -177,30 +184,34 @@ class TankEnv(Env):
 
 
         reward = 0
-        # Player hits enemy
+        # Player hits enemy (scaled from 50 to 0.5)
         for tank in self.tanks:
             if tank != self.player_tank and tank.health < enemy_health_prev[tank]:
-                reward += 10
+                reward += 0.5
 
-        # Player gets hit
+        # Player gets hit (scaled from -50 to -0.5)
         if player_health_prev > self.player_tank.health:
-            reward -= 10
+            reward -= 0.5
 
-        # Player destroys enemy
+        # Player destroys enemy (scaled from 50 to 1.0)
         if destroyed:
-            reward += 50
+            reward += 1.0
 
         done = False
-        # Player wins
+        # Player wins (scaled reward based on remaining health)
         if len(self.tanks) == 1 and self.player_tank in self.tanks:
-            reward += 10 * self.player_tank.health
+            reward += self.player_tank.health / TANK_HEALTH  # Normalized between 0 and 1
             done = True
 
-        # Player dies/loses
+        # Player dies/loses (scaled punishment based on remaining enemy health)
         if self.player_tank.health <= 0:
-            reward -= (10 * sum([i.health for i in self.tanks]) + 10 * (1-(self.train_time // TRAIN_TIME_LIMIT)))
+            total_enemy_health = sum([i.health for i in self.tanks])
+            reward -= total_enemy_health / (TANK_HEALTH * NUMBER_OF_ENEMIES)  # Normalized between 0 and 1
             done = True
-    
+
+        # Clip final reward to stay within [-1, 1] range
+        reward = np.clip(reward, -1.0, 1.0)
+
         info = {}
 
         self.state = self.get_all_info()
@@ -265,40 +276,6 @@ class TankEnv(Env):
         self.clock.tick(60)
 
 
-    # def render2(self, mode='rgb_array'):
-    #     if mode == 'rgb_array':
-    #         # Get the pygame surface as a RGB array
-    #         self.screen.fill((200, 200, 200))
-
-    #         # Draw all game elements
-    #         self.status_bar.draw(self.screen)
-    #         for wall in self.walls:
-    #             wall.draw(self.screen)
-    #         for tank in self.tanks:
-    #             tank.draw(self.screen)
-    #             for bullet in tank.bullets:
-    #                 bullet.draw(self.screen)
-                
-    #         pygame.display.flip()
-    #         self.clock.tick(30)
-    #         return np.transpose(
-    #             np.array(pygame.surfarray.pixels3d(self.screen)), axes=(1, 0, 2)
-    #         )
-    #     elif mode == 'human':
-    #         # Original render code
-    #         self.screen.fill((200, 200, 200))
-    #         self.status_bar.draw(self.screen)
-    #         for wall in self.walls:
-    #             wall.draw(self.screen)
-    #         for tank in self.tanks:
-    #             tank.draw(self.screen)
-    #             for bullet in tank.bullets:
-    #                 bullet.draw(self.screen)
-    #         pygame.display.flip()
-    #         self.clock.tick(30)
-    #     else:
-    #         raise NotImplementedError(f"Render mode {mode} not implemented")
-    
 
     ########### HELPER FUNCTIONS ###########
 
@@ -309,8 +286,10 @@ class TankEnv(Env):
 
     def create_enemy_tanks(self, mode = "heuristic"):
         for i in range(NUMBER_OF_ENEMIES):
-            x = random.randint(0, WINDOW_WIDTH)
-            y = random.randint(0, WINDOW_HEIGHT)
+            # x = random.randint(0, WINDOW_WIDTH)
+            # y = random.randint(0, WINDOW_HEIGHT)
+            x = 100
+            y = 100
             while check_spawn_spot_occupied(x, y, self.tanks, self.walls):
                 x = random.randint(0, WINDOW_WIDTH)
                 y = random.randint(0, WINDOW_HEIGHT)
@@ -342,12 +321,15 @@ class TankEnv(Env):
         
         # Player shooter angle (1 value)
         observation[3] = self.player_tank.shooter_angle
+
+        # Player health (1 value)
+        observation[4] = self.player_tank.health
         
-        # Enemy positions, angles, and shooter angles
+        # Enemy positions, angles, shooter angles, and health
         enemy_locations = self.get_enemy_locations()
-        current_idx = 4
+        current_idx = 5  # Updated starting index
         for i, (ex, ey) in enumerate(enemy_locations):
-            if i < NUMBER_OF_ENEMIES:  # Ensure we don't exceed the space allocated
+            if i < NUMBER_OF_ENEMIES:
                 observation[current_idx + i*2] = ex
                 observation[current_idx + i*2 + 1] = ey
         
@@ -360,20 +342,25 @@ class TankEnv(Env):
         for i, enemy in enumerate(self.tanks):
             if enemy != self.player_tank and i < NUMBER_OF_ENEMIES:
                 observation[current_idx + i] = enemy.shooter_angle
+
+        current_idx += NUMBER_OF_ENEMIES
+        for i, enemy in enumerate(self.tanks):
+            if enemy != self.player_tank and i < NUMBER_OF_ENEMIES:
+                observation[current_idx + i] = enemy.health
         
         # Bullet positions
         current_idx += NUMBER_OF_ENEMIES
         bullet_info = self.get_bullet_info()
         for i, (bx, by, _, _) in enumerate(bullet_info):
-            if i < self.max_bullets:  # max_bullets from your observation space definition
+            if i < self.max_bullets:
                 observation[current_idx + i*2] = bx
                 observation[current_idx + i*2 + 1] = by
         
         # Wall positions
-        current_idx += self.max_bullets * 2  # max_bullets * 2
+        current_idx += self.max_bullets * 2
         wall_info = self.get_wall_info()
         for i, (wx, wy, ww, wh) in enumerate(wall_info):
-            if i < self.max_walls:  # max_walls from your observation space definition
+            if i < self.max_walls:
                 observation[current_idx + i*4] = wx
                 observation[current_idx + i*4 + 1] = wy
                 observation[current_idx + i*4 + 2] = ww

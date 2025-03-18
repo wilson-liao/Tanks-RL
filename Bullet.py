@@ -4,12 +4,12 @@ from config import *
 
 
 class Bullet:
-    def __init__(self, x, y, angle, tank):
+    def __init__(self, x, y, angle, tank, color):
         self.x = x
         self.y = y
         self.angle = math.radians(angle)
         self.speed = BULLET_SPEED
-
+        self.color = color
         self.tank = tank
 
         self.lifeTime = 0
@@ -26,7 +26,7 @@ class Bullet:
         return pygame.Rect(self.x, self.y, BULLET_SIZE, BULLET_SIZE)
 
     def draw(self, screen):
-        pygame.draw.circle(screen, BULLET_COLOR, (self.x, self.y), BULLET_SIZE)
+        pygame.draw.circle(screen, self.color, (self.x, self.y), BULLET_SIZE)
 
     def destroy(self):
         # Remove bullet from game 

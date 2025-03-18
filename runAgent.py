@@ -20,7 +20,7 @@ env = TankEnv()
 
 states = env.observation_space.shape
 actions = env.action_space.n
-
+print(states)
 
 
 def build_model(states, actions):
@@ -54,6 +54,6 @@ dqn = build_agent(model, actions)
 dqn.compile(Adam(learning_rate=0.01))
 
 # Later, to load and test:
-dqn.load_weights('dqn_weights.h5f')
+dqn.load_weights('dqn_best_weights_stationary_bot.h5f')
 test_scores = dqn.test(env, nb_episodes=10, visualize=True)
 print(test_scores)
