@@ -147,15 +147,13 @@ class TankEnv(Env):
         elif action == 5:  # Rotate turret right
             self.player_tank.rotate_shooter(1)
         elif action == 6:  # Shoot action
-            enemy_tank = next(tank for tank in self.tanks if tank != self.player_tank)
-            if enemy_tank:
-                bullet_fired = self.player_tank.auto_aim_shoot(enemy_tank)
-                if bullet_fired:
-                    reward += 3  # shooting reward
-            
+            enemy_tank = self.get_enemy_locations()[0]
+            bullet_fired = self.player_tank.shoot(enemy_tank)
+            if bullet_fired:
+                reward += 3  # shooting reward
             # Align turret clearly rewarded
-            dx = enemy_tank.x - self.player_tank.x
-            dy = enemy_tank.y - self.player_tank.y
+            dx = enemy_tank[0] - self.player_tank.x
+            dy = enemy_tank[1] - self.player_tank.y
             desired_angle = (math.degrees(math.atan2(dy, dx)) + 90) % 360
 
             angle_diff = abs((self.player_tank.shooter_angle - desired_angle) % 360)

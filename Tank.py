@@ -39,8 +39,6 @@ class Tank:
 
         # Bullet list
         self.bullets = []
-
-        self.game = game
     
 
     @property
@@ -126,11 +124,9 @@ class Tank:
         self.shooter_angle = self.shooter_angle % 360
 
 
-    def shoot(self, auto_aim=True):
-        if auto_aim:
-            # !!! THIS IS ONLY THE FIRST ENEMY TANK, NEED TO CHANGE FOR MULTIPLE ENEMY TANKS
-            enemy_tank = self.game.get_enemy_locations()[0]
-            self.auto_aim(enemy_tank)
+    def shoot(self, location=None):
+        if location != None:
+            self.auto_aim(location)
         # Create a new ammo object
         if self.cooldown >= BULLET_COOLDOWN:
             # Calculate bullet spawn position at end of turret

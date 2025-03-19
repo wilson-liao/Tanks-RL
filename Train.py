@@ -103,7 +103,7 @@ except Exception as e:
     print("No existing weights found, starting fresh training")
 
 # Modify training parameters
-dqn.fit(env, nb_steps=EPISODES, visualize=False, verbose=1, callbacks=[training_callback])
+dqn.fit(env, nb_steps=EPISODES, visualize=True, verbose=1, callbacks=[training_callback])
 
 # Save final weights
 # dqn.save_weights('dqn_final_weights_heuristic_bot.h5f', overwrite=True)
