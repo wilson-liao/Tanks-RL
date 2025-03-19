@@ -4,9 +4,11 @@ import numpy as np
 import random
 import pickle
 
-from keras.models import Sequential
-from keras.layers import Dense, Flatten
-from keras.optimizers import Adam
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.layers import Lambda, Input
+from tensorflow.keras.models import Model
 
 from rl.agents import DQNAgent
 from rl.policy import BoltzmannQPolicy, LinearAnnealedPolicy, EpsGreedyQPolicy
@@ -17,6 +19,7 @@ import sys
 
 from config import *
 from TankGameEnv import TankEnv
+import tensorflow as tf
 
 env = TankEnv()
 
@@ -34,15 +37,33 @@ def build_model(states, actions):
     
     return model
 
+def build_dueling_model(states, actions):
+    inputs = Input(shape=(1,) + states)
+    x = Flatten()(inputs)
+    x = Dense(24, activation="relu")(x)
+    x = Dense(24, activation="relu")(x)
+
+    # Split into Value and Advantage Streams
+    value = Dense(1, activation="linear")(x)  # V(s)
+    advantage = Dense(actions, activation="linear")(x)  # A(s, a)
+
+    # Combine the two streams
+    q_values = Lambda(lambda a: a[0] + (a[1] - tf.reduce_mean(a[1], axis=1, keepdims=True)),
+                      output_shape=(actions,))([value, advantage])
+
+    model = Model(inputs=inputs, outputs=q_values)
+    return model
+
+
 
 def build_agent(model, actions):
     policy = LinearAnnealedPolicy(
         EpsGreedyQPolicy(),
         attr='eps',
         value_max=1.0,    # Start with 100% exploration
-        value_min=0.1,    # End with 10% exploration
+        value_min=0.05,    # End with 10% exploration
         value_test=0.05,  # Testing exploration rate
-        nb_steps=50000    # Number of steps for annealing
+        nb_steps=30000    # Number of steps for annealing
     )
     # policy = BoltzmannQPolicy(tau=0.01)
     memory = SequentialMemory(limit=5000000, window_length=1)
@@ -52,10 +73,11 @@ def build_agent(model, actions):
     return dqn
 
 
-model = build_model(states, actions)
+# model = build_model(states, actions)
+model = build_dueling_model(states, actions)
 # model.summary()
 dqn = build_agent(model, actions)
-dqn.compile(Adam(learning_rate=0.01))
+dqn.compile(Adam(learning_rate=0.005))
 
 # Custom callback to save best weights and handle interruption
 class TrainingCallback(Callback):
@@ -69,6 +91,8 @@ class TrainingCallback(Callback):
     def interrupt_handler(self, signum, frame):
         print('\nTraining interrupted. Saving best weights...')
         self.interrupted = True
+        print("[INFO] Exiting program.")
+        sys.exit(0)
     
     def on_episode_end(self, episode, logs={}):
         episode_reward = logs.get('episode_reward')

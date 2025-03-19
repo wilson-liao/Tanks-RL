@@ -13,6 +13,7 @@ from WallGenerator import WallGenerator
 from CollisionDetector import CollisionDetector
 from HeuristicBot import HeuristicBot
 from RandomBot import RandomBot
+from TrainingBot import TrainingBot
 from util import check_spawn_spot_occupied
 import pygame
 
@@ -63,6 +64,8 @@ class TankEnv(Env):
         # Move forward, move backward, turn left, turn right,
         # turn turret left, turn turret right, shoot, do nothing
         self.action_space = Discrete(8)
+        self.skill_level = 0
+        self.training_progress = 0
 
 
         # Observation space includes:
@@ -121,6 +124,10 @@ class TankEnv(Env):
     def step(self, action):
         # Handle events
         self.game_state, running = self.game_state_handler.update_game_state(self.tanks, self.player_tank)
+        self.training_progress += 1
+
+        # Gradually improve opponent based on progress (0 = pure random, 1 = full heuristic)
+        self.skill_level = min(1.0, self.training_progress / 100000)
 
 
         # Convert action to game controls
@@ -142,10 +149,13 @@ class TankEnv(Env):
             pass
         # print(f"Action: {action}")
         
-        # Enemy moves with collision checking
+        # # Enemy moves with collision checking
         for tank in self.tanks:
             if tank != self.player_tank:
-                tank.take_action()
+                if isinstance(tank, TrainingBot):
+                    tank.take_action(self.skill_level)
+                else:
+                    tank.take_action()
                 
         
 
@@ -180,7 +190,7 @@ class TankEnv(Env):
         # Player hits enemy
         for tank in self.tanks:
             if tank != self.player_tank and tank.health < enemy_health_prev[tank]:
-                reward += 10
+                reward += 15
 
         # Player gets hit
         if player_health_prev > self.player_tank.health:

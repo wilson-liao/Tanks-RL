@@ -4,6 +4,7 @@ from WallGenerator import Wall
 from Bullet import Bullet
 from HeuristicBot import HeuristicBot
 from RandomBot import RandomBot
+from TrainingBot import TrainingBot
 from config import WINDOW_WIDTH, WINDOW_HEIGHT
 
 '''
