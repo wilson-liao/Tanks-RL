@@ -22,8 +22,8 @@ class CollisionDetector:
         
         
         self.collision_handlers = {}
-        self.collidable_objects = ['HeuristicBot', 'RandomBot', 'Tank', 'Wall', 'Bullet']
-        self.tank_types = (Tank, HeuristicBot, RandomBot)
+        self.collidable_objects = ['HeuristicBot', 'RandomBot', 'TrainingBot', 'Tank', 'Wall', 'Bullet']
+        self.tank_types = (Tank, HeuristicBot, RandomBot, TrainingBot)
         self.tanks = tanks
         self.walls = walls
         self.bullets = bullets

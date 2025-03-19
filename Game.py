@@ -60,13 +60,13 @@ class Game:
                 y = random.randint(0, WINDOW_HEIGHT)
 
             if mode == "heuristic":
-                print("Creating Heuristic Bot")
+                # print("Creating Heuristic Bot")
                 self.enemy_tank = HeuristicBot(self, x, y, (150, 0, 0))
             elif mode == "random":
-                print("Creating Random Bot")
+                # print("Creating Random Bot")
                 self.enemy_tank = RandomBot(self, x, y, (150, 0, 0))
             elif mode == "training":
-                print("Creating Training Bot")
+                # print("Creating Training Bot")
                 self.enemy_tank = TrainingBot(self, x, y, (150, 0, 0))
 
 

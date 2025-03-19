@@ -27,9 +27,10 @@ class TrainingBot(Tank):
         player_position = self.game.get_player_location()
 
         # Case 1: Shoot player
-        self.shoot_player(player_position)
+
         # lower than skill level -> random
-        if(random.choices([0, 1], weights=[1-skill, skill])):
+        if(random.choices([0, 1], weights=[skill, 1-skill])):
+            # print("IN RANDOM")
             action = random.choices(list(self.action_probabilities.keys()), 
                                     weights=list(self.action_probabilities.values()))[0]
             if action == "move":
@@ -50,6 +51,7 @@ class TrainingBot(Tank):
                 # print(f"Invalid action: {action}")
                 pass
         else:
+            # print("IN HEURISTIC")
             if self.cooldown == BULLET_COOLDOWN-1:
                 self.shoot_player(player_position)
 

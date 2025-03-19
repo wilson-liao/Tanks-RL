@@ -2,6 +2,7 @@ from gym import Env
 from gym.spaces import Discrete, Box
 import numpy as np
 import random
+import math
 
 from config import *
 from Game import Game
@@ -127,7 +128,7 @@ class TankEnv(Env):
         self.training_progress += 1
 
         # Gradually improve opponent based on progress (0 = pure random, 1 = full heuristic)
-        self.skill_level = min(1.0, self.training_progress / 100000)
+        self.skill_level = self.training_progress / 10000
 
 
         # Convert action to game controls
@@ -190,15 +191,15 @@ class TankEnv(Env):
         # Player hits enemy
         for tank in self.tanks:
             if tank != self.player_tank and tank.health < enemy_health_prev[tank]:
-                reward += 15
+                reward += 35
 
         # Player gets hit
         if player_health_prev > self.player_tank.health:
-            reward -= 10
+            reward -= 50
 
         # Player destroys enemy
         if destroyed:
-            reward += 50
+            reward += 500
 
         done = False
         # Player wins
@@ -208,8 +209,25 @@ class TankEnv(Env):
 
         # Player dies/loses
         if self.player_tank.health <= 0:
-            reward -= (10 * sum([i.health for i in self.tanks]) + 10 * (1-(self.train_time // TRAIN_TIME_LIMIT)))
+            reward -= (10 * sum([i.health for i in self.tanks]) + 10 * (1-(self.train_time // TRAIN_TIME_LIMIT)))*100
             done = True
+
+        # if barrel is within 3 degrees of the enemy
+        # total aiming should be around 50 points
+        if self.get_enemy_locations():
+            target_angle = (math.degrees(self.calculate_enemy_angle(self.player_tank.x, self.player_tank.y, self.get_enemy_locations()[0])) + 90) % 360
+            angle_diff = (self.player_tank.shooter_angle - target_angle)%360
+            # aim_reward = 0
+            if angle_diff <= 45:
+                reward += 0.01
+            if angle_diff <= 10:
+                print("Aimed correctly")
+                reward += 5
+            else:
+                reward -= 1
+            # print("AIM REWARD: ", aim_reward, " TOTAL REWARD: ", reward)
+            # reward += (aim_reward/self.training_progress)*80
+            # print("REWARD AFTER WEIGHTED SUM: ", reward)
     
         info = {}
 
@@ -221,6 +239,10 @@ class TankEnv(Env):
             self.train_time = 0
 
         return self.state, reward, done, info
+    
+    def calculate_enemy_angle(self, x, y, enemy_position):
+        angle = math.atan2(enemy_position[1] - y, enemy_position[0] - x)
+        return angle
 
     
     def reset(self, mode = BOT_MODE):
@@ -329,6 +351,8 @@ class TankEnv(Env):
                 self.enemy_tank = HeuristicBot(self, x, y, (150, 0, 0))
             elif mode == "random":
                 self.enemy_tank = RandomBot(self, x, y, (150, 0, 0))
+            elif mode == "training":
+                self.enemy_tank = TrainingBot(self, x, y, (150, 0, 0))
 
 
             self.tanks.append(self.enemy_tank)

@@ -1,6 +1,6 @@
 # Game settings
-WINDOW_WIDTH = 600
-WINDOW_HEIGHT = 600
+WINDOW_WIDTH = 400
+WINDOW_HEIGHT = 400
 
 
 # Tank settings
@@ -37,7 +37,7 @@ STATUS_BAR_BACKGROUND_COLOR = (255, 255, 255)
 NUMBER_OF_ENEMIES = 1
 
 # Bot mode
-BOT_MODE = "random" # "heuristic" or "random"
+BOT_MODE = "training" # "heuristic" or "random" or "training"
 
 
 #Training settings
