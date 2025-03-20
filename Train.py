@@ -64,7 +64,7 @@ def build_agent(model, actions):
         value_max=1.0,    # Start with 100% exploration
         value_min=0.05,    # End with 10% exploration
         value_test=0.05,  # Testing exploration rate
-        nb_steps=30000    # Number of steps for annealing
+        nb_steps=10000    # Number of steps for annealing
     )
     # policy = BoltzmannQPolicy(tau=0.01)
     memory = SequentialMemory(limit=5000000, window_length=1)
@@ -81,6 +81,7 @@ dqn = build_agent(model, actions)
 dqn.compile(Adam(learning_rate=0.005))
 reward_history = []
 episode_history = []
+mean_q_history = []
 
 # Custom callback to save best weights and handle interruption
 class TrainingCallback(Callback):
@@ -95,22 +96,76 @@ class TrainingCallback(Callback):
         print('\nTraining interrupted. Saving best weights...')
         self.interrupted = True
         print("[INFO] Exiting program.")
-        plt.figure(figsize=(10,5))
+        # fig1 = plt.gcf()
+        # plt.figure(figsize=(10,5))
+        # plt.plot(reward_history, label="Episode Reward", color="b")
+        # plt.xlabel("Episode")
+        # plt.ylabel("Total Reward")
+        # plt.title("Reward Progression Over Training")
+        # plt.legend()
+        # plt.grid()
+        
+        # plt.draw()
+        
+
+        # graph_path = "reward_progression.png"
+        # fig1.savefig(graph_path, dpi=300)
+        # plt.show()
+
+        # fig2 = plt.gcf()
+        # plt.figure(figsize=(10,5))
+        # plt.plot(reward_history, label="Episode Mean Q Value", color="b")
+        # plt.xlabel("Episode")
+        # plt.ylabel("Mean Q Value")
+        # plt.title("Mean Q Progression Over Training")
+        # plt.legend()
+        # plt.grid()
+        
+        # plt.draw()
+        
+        # graph_path = "mean_q_progression.png"
+        # fig2.savefig(graph_path, dpi=300)
+        # plt.show()
+
+        # Plotting the reward progression
+        plt.figure(figsize=(10, 5))
         plt.plot(reward_history, label="Episode Reward", color="b")
         plt.xlabel("Episode")
         plt.ylabel("Total Reward")
         plt.title("Reward Progression Over Training")
         plt.legend()
         plt.grid()
-        plt.show()
+
+        # Save the reward progression figure
         graph_path = "reward_progression.png"
         plt.savefig(graph_path, dpi=300)
+        plt.close()  # Close the figure to avoid overlap with the next one
 
+        # Plotting the mean Q-value progression
+        plt.figure(figsize=(10, 5))
+        plt.plot(reward_history, label="Episode Mean Q Value", color="b")
+        plt.xlabel("Episode")
+        plt.ylabel("Mean Q Value")
+        plt.title("Mean Q Progression Over Training")
+        plt.legend()
+        plt.grid()
+
+        # Save the mean Q-value progression figure
+        graph_path = "mean_q_progression.png"
+        plt.savefig(graph_path, dpi=300)
+        plt.close()  # Close the figure after saving
+
+        # Optionally, show the plots (this will open the saved figures)
+        plt.show()
         sys.exit(0)
     
     def on_episode_end(self, episode, logs={}):
         episode_reward = logs.get('episode_reward')
+        print("REWARD: ",episode_reward)
         reward_history.append(episode_reward)
+        mean_q = logs.get('mean_q')
+        print("MEAN Q: ", mean_q)
+        mean_q_history.append(mean_q)
         # episode_history.append(episode)
 
         if episode_reward > self.best_reward:

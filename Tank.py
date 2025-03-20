@@ -134,25 +134,15 @@ class Tank:
     
 
     def take_action(self, action):
-        # if action == "move":
-        #     self.move()
-        # elif action == "move_backward":
-        #     self.move_backward()
-        # elif action == "rotate_clockwise":
-        #     self.rotate(1)
-        # elif action == "rotate_counterclockwise":
-        #     self.rotate(-1)
-        # elif action == "shoot":
-        #     self.shoot()
-        # elif action == "rotate_shooter_clockwise":
-        #     self.rotate_shooter(1)
-        # elif action == "rotate_shooter_counterclockwise":
-        #     self.rotate_shooter(-1)
-        # else:
-        #     # print(f"Invalid action: {action}")
-        #     pass
-
-        if action == "shoot":
+        if action == "move":
+            self.move()
+        elif action == "move_backward":
+            self.move_backward()
+        elif action == "rotate_clockwise":
+            self.rotate(1)
+        elif action == "rotate_counterclockwise":
+            self.rotate(-1)
+        elif action == "shoot":
             self.shoot()
         elif action == "rotate_shooter_clockwise":
             self.rotate_shooter(1)
@@ -161,3 +151,13 @@ class Tank:
         else:
             # print(f"Invalid action: {action}")
             pass
+
+        # if action == "shoot":
+        #     self.shoot()
+        # elif action == "rotate_shooter_clockwise":
+        #     self.rotate_shooter(1)
+        # elif action == "rotate_shooter_counterclockwise":
+        #     self.rotate_shooter(-1)
+        # else:
+        #     # print(f"Invalid action: {action}")
+        #     pass
