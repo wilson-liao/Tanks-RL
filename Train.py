@@ -24,7 +24,7 @@ import tensorflow as tf
 
 env = TankEnv()
 
-states = env.get_all_info().shape
+states = env.state.shape
 actions = env.action_space.n
 
 
@@ -96,7 +96,7 @@ class TrainingCallback(Callback):
         self.interrupted = True
         print("[INFO] Exiting program.")
         plt.figure(figsize=(10,5))
-        plt.plot(episode_history, reward_history, label="Episode Reward", color="b")
+        plt.plot(reward_history, label="Episode Reward", color="b")
         plt.xlabel("Episode")
         plt.ylabel("Total Reward")
         plt.title("Reward Progression Over Training")
@@ -111,7 +111,7 @@ class TrainingCallback(Callback):
     def on_episode_end(self, episode, logs={}):
         episode_reward = logs.get('episode_reward')
         reward_history.append(episode_reward)
-        episode_history.append(episode)
+        # episode_history.append(episode)
 
         if episode_reward > self.best_reward:
             self.best_reward = episode_reward

@@ -14,7 +14,7 @@ def check_spawn_spot_occupied(x, y, tanks, walls):
                         width, height))
     for tank in tanks:
         # if temp_rect.colliderect(tank.body_rect()):
-        if np.abs(x - tank.x) <=20 or np.abs(y - tank.y) <=20:
+        if np.abs(x - tank.x) <=30 or np.abs(y - tank.y) <=30:
             return True
     for wall in walls:
         if temp_rect.colliderect(wall.rect):

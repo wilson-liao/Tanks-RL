@@ -1,0 +1,736 @@
+61 - mean_eps: 0.050
+
+Interval 6 (50000 steps performed)
+   10/10000 [..............................] - ETA: 2:49 - reward: -2.9937Creating training bot 2
+ 5011/10000 [==============>...............] - ETA: 1:24 - reward: -0.1687Creating training bot 2
+10000/10000 [==============================] - 174s 17ms/step - reward: -1.3344
+2 episodes - episode_reward: 1450.913 [-815.438, 3717.263] - loss: 5409.206 - mean_q: 283.547 - mean_eps: 0.050
+
+Interval 7 (60000 steps performed)
+   10/10000 [..............................] - ETA: 2:58 - reward: -2.6939Creating training bot 2
+ 5011/10000 [==============>...............] - ETA: 1:29 - reward: -3.3182Creating training bot 2
+10000/10000 [==============================] - 179s 18ms/step - reward: -1.6329
+2 episodes - episode_reward: -14566.308 [-16601.243, -12531.373] - loss: 5663.986 - mean_q: 241.609 - mean_eps: 0.050
+
+Interval 8 (70000 steps performed)
+   13/10000 [..............................] - ETA: 2:59 - reward: -3.2170Creating training bot 2
+ 4048/10000 [===========>..................] - ETA: 1:46 - reward: 3.1822     
+New best reward: 12953.17 - Saved weights
+Creating training bot 2
+ 5015/10000 [==============>...............] - ETA: 1:29 - reward: 2.0321Creating training bot 2
+10000/10000 [==============================] - 179s 18ms/step - reward: 0.7565
+3 episodes - episode_reward: 3498.596 [-2714.646, 12953.171] - loss: 5456.536 - mean_q: 298.777 - mean_eps: 0.050
+
+Interval 9 (80000 steps performed)
+   16/10000 [..............................] - ETA: 2:58 - reward: 2.2167Creating training bot 2
+ 5016/10000 [==============>...............] - ETA: 1:29 - reward: -1.6256Creating training bot 2
+ 7821/10000 [======================>.......] - ETA: 38s - reward: -0.3830Creating training bot 2
+10000/10000 [==============================] - 179s 18ms/step - reward: 0.2623
+3 episodes - episode_reward: -1873.763 [-8187.026, 5156.428] - loss: 4724.696 - mean_q: 288.418 - mean_eps: 0.050
+
+Interval 10 (90000 steps performed)
+   16/10000 [..............................] - ETA: 2:59 - reward: -2.9954Creating training bot 2
+ 5018/10000 [==============>...............] - ETA: 1:29 - reward: -1.0510Creating training bot 2
+10000/10000 [==============================] - 179s 18ms/step - reward: -1.3282
+2 episodes - episode_reward: 171.039 [-5221.639, 5563.717] - loss: 4978.551 - mean_q: 327.517 - mean_eps: 0.050
+
+Interval 11 (100000 steps performed)
+   19/10000 [..............................] - ETA: 3:00 - reward: -2.9990Creating training bot 2
+  229/10000 [..............................] - ETA: 2:55 - reward: -1.8164Traceback (most recent call last):
+  File "/Users/jameswoolley/Documents/Julia's Things/Tanks-RL/Train.py", line 128, in <module>
+    dqn.fit(env, nb_steps=5000000, visualize=True, verbose=1, callbacks=[training_callback])
+  File "/opt/anaconda3/envs/py310/lib/python3.10/site-packages/rl/core.py", line 168, in fit
+    action = self.forward(observation)
+  File "/opt/anaconda3/envs/py310/lib/python3.10/site-packages/rl/agents/dqn.py", line 224, in forward
+    q_values = self.compute_q_values(state)
+  File "/opt/anaconda3/envs/py310/lib/python3.10/site-packages/rl/agents/dqn.py", line 68, in compute_q_values
+    q_values = self.compute_batch_q_values([state]).flatten()
+  File "/opt/anaconda3/envs/py310/lib/python3.10/site-packages/rl/agents/dqn.py", line 63, in compute_batch_q_values
+    q_values = self.model.predict_on_batch(batch)
+  File "/opt/anaconda3/envs/py310/lib/python3.10/site-packages/keras/engine/training_v1.py", line 1320, in predict_on_batch
+    outputs = self.predict_function(inputs)
+  File "/opt/anaconda3/envs/py310/lib/python3.10/site-packages/keras/backend.py", line 4577, in __call__
+    fetched = self._callable_fn(*array_vals, run_metadata=self.run_metadata)
+  File "/opt/anaconda3/envs/py310/lib/python3.10/site-packages/tensorflow/python/client/session.py", line 1481, in __call__
+    ret = tf_session.TF_SessionRunCallable(self._session._session,
+tensorflow.python.framework.errors_impl.InvalidArgumentError: In[0] and In[1] has different ndims: [1,24] vs. [0]
+         [[{{node dense_1/Relu}}]]
+(py310) jameswoolley@Jamess-MacBook-Pro Tanks-RL % python Train.py
+Creating training bot 2
+2025-03-20 01:23:27.211294: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:354] MLIR V1 optimization pass is not enabled
+2025-03-20 01:23:27.213508: W tensorflow/core/platform/profile_utils/cpu_utils.cc:128] Failed to get CPU frequency: 0 Hz
+Training for 5000000 steps ...
+Creating training bot 2
+Interval 1 (0 steps performed)
+/opt/anaconda3/envs/py310/lib/python3.10/site-packages/keras/engine/training_v1.py:2356: UserWarning: `Model.state_updates` will be removed in a future version. This property should not be used in TensorFlow 2.0, as `updates` are applied automatically.
+  updates=self.state_updates,
+2025-03-20 01:23:27.452 python[7490:141912] +[IMKClient subclass]: chose IMKClient_Modern
+2025-03-20 01:23:27.452 python[7490:141912] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+ 3678/10000 [==========>...................] - ETA: 1:47 - reward: -0.5205 
+New best reward: -1890.57 - Saved weights
+Creating training bot 2
+ 4926/10000 [=============>................] - ETA: 1:26 - reward: 0.8876 
+New best reward: 6292.67 - Saved weights
+Creating training bot 2
+ 5001/10000 [==============>...............] - ETA: 1:25 - reward: 0.8544Creating training bot 2
+10000/10000 [==============================] - 170s 17ms/step - reward: -0.9815
+3 episodes - episode_reward: 1424.256 [-1890.573, 6292.671] - loss: 5818.719 - mean_q: 220.048 - mean_eps: 0.840
+
+Interval 2 (10000 steps performed)
+    1/10000 [..............................] - ETA: 1:30 - reward: -5.9750Creating training bot 2
+ 3535/10000 [=========>....................] - ETA: 1:49 - reward: 3.8120 
+New best reward: 13511.35 - Saved weights
+Creating training bot 2
+ 3844/10000 [==========>...................] - ETA: 1:44 - reward: 5.9348Creating training bot 2
+ 5002/10000 [==============>...............] - ETA: 1:24 - reward: 4.2706Creating training bot 2
+ 5531/10000 [===============>..............] - ETA: 1:15 - reward: 5.7089Creating training bot 2
+ 6753/10000 [===================>..........] - ETA: 55s - reward: 5.5706Creating training bot 2
+ 7256/10000 [====================>.........] - ETA: 46s - reward: 6.3595Creating training bot 2
+ 9381/10000 [===========================>..] - ETA: 10s - reward: 5.4358Creating training bot 2
+10000/10000 [==============================] - 171s 17ms/step - reward: 4.9508
+8 episodes - episode_reward: 4616.921 [-14099.623, 13511.348] - loss: 9851.460 - mean_q: 912.534 - mean_eps: 0.525
+
+Interval 3 (20000 steps performed)
+    4/10000 [..............................] - ETA: 2:58 - reward: 1.5213Creating training bot 2
+ 3821/10000 [==========>...................] - ETA: 1:50 - reward: 1.5313Creating training bot 2
+ 5004/10000 [==============>...............] - ETA: 1:29 - reward: 1.5850Creating training bot 2
+ 8228/10000 [=======================>......] - ETA: 31s - reward: 1.1979Creating training bot 2
+10000/10000 [==============================] - 178s 18ms/step - reward: 1.1011
+4 episodes - episode_reward: 2092.862 [-1508.740, 5868.958] - loss: 13577.150 - mean_q: 1005.201 - mean_eps: 0.208
+
+Interval 4 (30000 steps performed)
+    4/10000 [..............................] - ETA: 2:50 - reward: -1.4344Creating training bot 2
+ 1646/10000 [===>..........................] - ETA: 2:21 - reward: 6.3872Creating training bot 2
+ 5006/10000 [==============>...............] - ETA: 1:24 - reward: 2.2236Creating training bot 2
+10000/10000 [==============================] - 170s 17ms/step - reward: 1.3725
+3 episodes - episode_reward: 4084.608 [586.087, 10551.120] - loss: 12917.486 - mean_q: 970.794 - mean_eps: 0.050
+
+Interval 5 (40000 steps performed)
+    7/10000 [..............................] - ETA: 2:48 - reward: 2.1455Creating training bot 2
+ 2196/10000 [=====>........................] - ETA: 2:12 - reward: 3.5618Creating training bot 2
+ 5007/10000 [==============>...............] - ETA: 1:26 - reward: 0.6489Creating training bot 2
+ 8374/10000 [========================>.....] - ETA: 27s - reward: 0.4035Creating training bot 2
+ 9961/10000 [============================>.] - ETA: 0s - reward: 1.1511Creating training bot 2
+10000/10000 [==============================] - 172s 17ms/step - reward: 1.1379
+5 episodes - episode_reward: 2817.057 [-4604.504, 8086.941] - loss: 9586.067 - mean_q: 848.333 - mean_eps: 0.050
+
+Interval 6 (50000 steps performed)
+   10/10000 [..............................] - ETA: 2:48 - reward: -2.9983Creating training bot 2
+ 5009/10000 [==============>...............] - ETA: 1:24 - reward: 0.4852Creating training bot 2
+ 8024/10000 [=======================>......] - ETA: 33s - reward: 1.3494Creating training bot 2
+10000/10000 [==============================] - 170s 17ms/step - reward: 1.2121
+3 episodes - episode_reward: 3582.282 [-140.923, 8433.446] - loss: 8705.411 - mean_q: 746.988 - mean_eps: 0.050
+
+Interval 7 (60000 steps performed)
+   12/10000 [..............................] - ETA: 2:48 - reward: -2.9858Creating training bot 2
+ 2199/10000 [=====>........................] - ETA: 2:12 - reward: 2.5338Creating training bot 2
+ 3250/10000 [========>.....................] - ETA: 1:54 - reward: 4.0738Creating training bot 2
+ 4940/10000 [=============>................] - ETA: 1:25 - reward: 4.0346Creating training bot 2
+ 5011/10000 [==============>...............] - ETA: 1:24 - reward: 3.9888Creating training bot 2
+ 5434/10000 [===============>..............] - ETA: 1:17 - reward: 5.5007Creating training bot 2
+ 6135/10000 [=================>............] - ETA: 1:05 - reward: 6.6296Creating training bot 2
+10000/10000 [==============================] - 169s 17ms/step - reward: 4.5078
+7 episodes - episode_reward: 5990.783 [20.768, 10781.676] - loss: 8882.771 - mean_q: 738.895 - mean_eps: 0.050
+
+Interval 8 (70000 steps performed)
+   13/10000 [..............................] - ETA: 2:50 - reward: -2.3848Creating training bot 2
+ 5015/10000 [==============>...............] - ETA: 1:24 - reward: 0.7935Creating training bot 2
+ 7088/10000 [====================>.........] - ETA: 50s - reward: 1.4460Creating training bot 2
+ 8194/10000 [=======================>......] - ETA: 31s - reward: 2.5599Creating training bot 2
+10000/10000 [==============================] - 174s 17ms/step - reward: 2.0844
+4 episodes - episode_reward: 6351.189 [4012.153, 10719.990] - loss: 10026.331 - mean_q: 795.413 - mean_eps: 0.050
+
+Interval 9 (80000 steps performed)
+   16/10000 [..............................] - ETA: 2:57 - reward: -3.0000Creating training bot 2
+ 2619/10000 [======>.......................] - ETA: 2:10 - reward: 1.2608Creating training bot 2
+ 3024/10000 [========>.....................] - ETA: 2:03 - reward: 4.3371Creating training bot 2
+ 3654/10000 [=========>....................] - ETA: 1:52 - reward: 6.1151Creating training bot 2
+ 5017/10000 [==============>...............] - ETA: 1:28 - reward: 4.2208Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 1.8768
+5 episodes - episode_reward: 4204.038 [-1198.559, 9783.194] - loss: 9968.886 - mean_q: 820.254 - mean_eps: 0.050
+
+Interval 10 (90000 steps performed)
+   16/10000 [..............................] - ETA: 2:55 - reward: -3.0000Creating training bot 2
+ 5019/10000 [==============>...............] - ETA: 1:28 - reward: -1.1291Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: -1.2461
+2 episodes - episode_reward: -4037.659 [-5613.076, -2462.243] - loss: 8777.550 - mean_q: 831.510 - mean_eps: 0.050
+
+Interval 11 (100000 steps performed)
+   19/10000 [..............................] - ETA: 2:56 - reward: -2.9752Creating training bot 2
+ 5020/10000 [==============>...............] - ETA: 1:28 - reward: 0.7892Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: -0.2285
+2 episodes - episode_reward: -1417.470 [-6853.201, 4018.261] - loss: 7774.654 - mean_q: 750.946 - mean_eps: 0.050
+
+Interval 12 (110000 steps performed)
+   22/10000 [..............................] - ETA: 2:58 - reward: -2.9916Creating training bot 2
+ 5022/10000 [==============>...............] - ETA: 1:28 - reward: 0.3765Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 1.0726
+2 episodes - episode_reward: -2176.566 [-6309.267, 1956.134] - loss: 8333.088 - mean_q: 737.483 - mean_eps: 0.050
+
+Interval 13 (120000 steps performed)
+   22/10000 [..............................] - ETA: 2:56 - reward: -1.3787Creating training bot 2
+ 5025/10000 [==============>...............] - ETA: 1:28 - reward: -0.1619Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: -0.0337
+2 episodes - episode_reward: 4011.335 [-788.977, 8811.648] - loss: 7480.424 - mean_q: 741.147 - mean_eps: 0.050
+
+Interval 14 (130000 steps performed)
+   25/10000 [..............................] - ETA: 2:55 - reward: 0.7931Creating training bot 2
+ 3514/10000 [=========>....................] - ETA: 1:55 - reward: 1.7120Creating training bot 2
+ 4544/10000 [============>.................] - ETA: 1:36 - reward: 3.0250Creating training bot 2
+ 5026/10000 [==============>...............] - ETA: 1:28 - reward: 2.7613Creating training bot 2
+ 6914/10000 [===================>..........] - ETA: 54s - reward: 3.2569Creating training bot 2
+ 9199/10000 [==========================>...] - ETA: 14s - reward: 3.1097Creating training bot 2
+ 9514/10000 [===========================>..] - ETA: 8s - reward: 4.0833Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 3.8072
+7 episodes - episode_reward: 5617.844 [99.690, 10242.565] - loss: 8339.475 - mean_q: 768.219 - mean_eps: 0.050
+
+Interval 15 (140000 steps performed)
+   28/10000 [..............................] - ETA: 2:55 - reward: -1.9277Creating training bot 2
+ 1952/10000 [====>.........................] - ETA: 2:22 - reward: 5.8508Creating training bot 2
+ 2815/10000 [=======>......................] - ETA: 2:07 - reward: 7.3606Creating training bot 2
+ 5027/10000 [==============>...............] - ETA: 1:28 - reward: 4.3857Creating training bot 2
+ 8768/10000 [=========================>....] - ETA: 21s - reward: 2.8522Creating training bot 2
+ 9540/10000 [===========================>..] - ETA: 8s - reward: 3.5612Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 3.3397
+6 episodes - episode_reward: 5537.783 [-830.756, 11504.823] - loss: 9149.401 - mean_q: 794.175 - mean_eps: 0.050
+
+Interval 16 (150000 steps performed)
+   29/10000 [..............................] - ETA: 2:56 - reward: -3.5169Creating training bot 2
+ 2806/10000 [=======>......................] - ETA: 2:07 - reward: 1.5521Creating training bot 2
+ 5029/10000 [==============>...............] - ETA: 1:28 - reward: 0.7674Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 0.0636
+3 episodes - episode_reward: 1085.674 [-710.984, 4484.112] - loss: 8649.433 - mean_q: 781.133 - mean_eps: 0.050
+
+Interval 17 (160000 steps performed)
+   31/10000 [..............................] - ETA: 2:58 - reward: -2.9961Creating training bot 2
+ 4455/10000 [============>.................] - ETA: 1:38 - reward: 0.7368Creating training bot 2
+ 5032/10000 [==============>...............] - ETA: 1:28 - reward: 0.3552Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 1.8241
+3 episodes - episode_reward: -480.883 [-3323.090, 3408.539] - loss: 8203.425 - mean_q: 775.574 - mean_eps: 0.050
+
+Interval 18 (170000 steps performed)
+   34/10000 [..............................] - ETA: 2:56 - reward: 1.4769
+New best reward: 16506.70 - Saved weights
+Creating training bot 2
+  547/10000 [>.............................] - ETA: 2:47 - reward: 15.3181Creating training bot 2
+ 2814/10000 [=======>......................] - ETA: 2:07 - reward: 7.8071Creating training bot 2
+ 5033/10000 [==============>...............] - ETA: 1:28 - reward: 4.2407Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 1.6708
+4 episodes - episode_reward: 9448.512 [-661.669, 16506.705] - loss: 7992.498 - mean_q: 924.133 - mean_eps: 0.050
+
+Interval 19 (180000 steps performed)
+   34/10000 [..............................] - ETA: 2:57 - reward: -2.9999Creating training bot 2
+ 5035/10000 [==============>...............] - ETA: 1:28 - reward: -1.4570Creating training bot 2
+ 9386/10000 [===========================>..] - ETA: 10s - reward: -0.8561Creating training bot 2
+10000/10000 [==============================] - 178s 18ms/step - reward: -0.6772
+3 episodes - episode_reward: -4211.589 [-7234.058, -663.045] - loss: 8979.868 - mean_q: 951.194 - mean_eps: 0.050
+
+Interval 20 (190000 steps performed)
+   37/10000 [..............................] - ETA: 2:57 - reward: 2.6371Creating training bot 2
+  448/10000 [>.............................] - ETA: 2:49 - reward: 21.0180Creating training bot 2
+  970/10000 [=>............................] - ETA: 2:40 - reward: 20.1828Creating training bot 2
+ 5039/10000 [==============>...............] - ETA: 1:28 - reward: 3.7966Creating training bot 2
+ 5489/10000 [===============>..............] - ETA: 1:20 - reward: 5.5028Creating training bot 2
+ 6273/10000 [=================>............] - ETA: 1:06 - reward: 6.1367Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 3.2828
+6 episodes - episode_reward: 6621.476 [-476.056, 11103.418] - loss: 9433.348 - mean_q: 996.900 - mean_eps: 0.050
+
+Interval 21 (200000 steps performed)
+   38/10000 [..............................] - ETA: 2:55 - reward: -3.4837Creating training bot 2
+ 3245/10000 [========>.....................] - ETA: 1:59 - reward: 2.5985Creating training bot 2
+ 4473/10000 [============>.................] - ETA: 1:38 - reward: 4.3462Creating training bot 2
+ 4983/10000 [=============>................] - ETA: 1:29 - reward: 6.0594Creating training bot 2
+ 5040/10000 [==============>...............] - ETA: 1:28 - reward: 5.9613Creating training bot 2
+ 6344/10000 [==================>...........] - ETA: 1:04 - reward: 6.7411Creating training bot 2
+ 7168/10000 [====================>.........] - ETA: 50s - reward: 7.5195Creating training bot 2
+ 8520/10000 [========================>.....] - ETA: 26s - reward: 7.3478Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 6.3623
+8 episodes - episode_reward: 7120.676 [-5810.434, 12751.890] - loss: 9059.754 - mean_q: 974.589 - mean_eps: 0.050
+
+Interval 22 (210000 steps performed)
+   40/10000 [..............................] - ETA: 2:56 - reward: -2.9999Creating training bot 2
+ 5042/10000 [==============>...............] - ETA: 1:28 - reward: 3.9305 
+New best reward: 19945.29 - Saved weights
+Creating training bot 2
+ 6703/10000 [===================>..........] - ETA: 58s - reward: 4.3760Creating training bot 2
+ 9837/10000 [============================>.] - ETA: 2s - reward: 3.0807Creating training bot 2
+10000/10000 [==============================] - 178s 18ms/step - reward: 3.0352
+4 episodes - episode_reward: 7831.402 [864.517, 19945.286] - loss: 10197.768 - mean_q: 981.699 - mean_eps: 0.050
+
+Interval 23 (220000 steps performed)
+   43/10000 [..............................] - ETA: 2:55 - reward: 2.3199Creating training bot 2
+  970/10000 [=>............................] - ETA: 2:40 - reward: 11.1690Creating training bot 2
+ 5045/10000 [==============>...............] - ETA: 1:27 - reward: 0.7809Creating training bot 2
+ 5379/10000 [===============>..............] - ETA: 1:22 - reward: 2.5557Creating training bot 2
+ 5792/10000 [================>.............] - ETA: 1:14 - reward: 4.2160Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 2.2732
+5 episodes - episode_reward: 4887.197 [-6894.204, 10731.828] - loss: 9852.359 - mean_q: 930.616 - mean_eps: 0.050
+
+Interval 24 (230000 steps performed)
+   46/10000 [..............................] - ETA: 2:56 - reward: -0.0640Creating training bot 2
+ 5047/10000 [==============>...............] - ETA: 1:27 - reward: 3.9054Creating training bot 2
+ 6292/10000 [=================>............] - ETA: 1:05 - reward: 4.1838Creating training bot 2
+ 8624/10000 [========================>.....] - ETA: 24s - reward: 4.4668Creating training bot 2
+10000/10000 [==============================] - 178s 18ms/step - reward: 4.2273
+4 episodes - episode_reward: 9216.196 [-1689.712, 19713.667] - loss: 9792.683 - mean_q: 913.996 - mean_eps: 0.050
+
+Interval 25 (240000 steps performed)
+   46/10000 [..............................] - ETA: 2:56 - reward: 1.1876Creating training bot 2
+ 2641/10000 [======>.......................] - ETA: 2:10 - reward: 3.2655Creating training bot 2
+ 3089/10000 [========>.....................] - ETA: 2:02 - reward: 5.5670Creating training bot 2
+ 3503/10000 [=========>....................] - ETA: 1:55 - reward: 7.3938Creating training bot 2
+ 4757/10000 [=============>................] - ETA: 1:33 - reward: 6.6821Creating training bot 2
+ 5047/10000 [==============>...............] - ETA: 1:27 - reward: 6.1857Creating training bot 2
+ 7530/10000 [=====================>........] - ETA: 43s - reward: 4.4775Creating training bot 2
+ 9612/10000 [===========================>..] - ETA: 6s - reward: 4.3999Creating training bot 2
+10000/10000 [==============================] - 178s 18ms/step - reward: 4.8069
+8 episodes - episode_reward: 5755.381 [-603.542, 8704.077] - loss: 9039.533 - mean_q: 831.955 - mean_eps: 0.050
+
+Interval 26 (250000 steps performed)
+   49/10000 [..............................] - ETA: 2:57 - reward: 0.7048Creating training bot 2
+  364/10000 [>.............................] - ETA: 2:51 - reward: 26.3503Creating training bot 2
+ 4348/10000 [============>.................] - ETA: 1:40 - reward: 2.3076Creating training bot 2
+ 5051/10000 [==============>...............] - ETA: 1:27 - reward: 2.6750Creating training bot 2
+10000/10000 [==============================] - 178s 18ms/step - reward: 0.9392
+4 episodes - episode_reward: 4814.782 [441.918, 9585.618] - loss: 9032.146 - mean_q: 739.034 - mean_eps: 0.050
+
+Interval 27 (260000 steps performed)
+   52/10000 [..............................] - ETA: 2:57 - reward: -3.7543Creating training bot 2
+ 1692/10000 [====>.........................] - ETA: 2:27 - reward: 2.9944Creating training bot 2
+ 5051/10000 [==============>...............] - ETA: 1:27 - reward: 0.9852Creating training bot 2
+ 7107/10000 [====================>.........] - ETA: 51s - reward: 2.1576Creating training bot 2
+ 7910/10000 [======================>.......] - ETA: 37s - reward: 3.2529Creating training bot 2
+10000/10000 [==============================] - 178s 18ms/step - reward: 2.5448
+5 episodes - episode_reward: 4322.275 [-4314.591, 10394.067] - loss: 9341.119 - mean_q: 705.053 - mean_eps: 0.050
+
+Interval 28 (270000 steps performed)
+   52/10000 [..............................] - ETA: 2:56 - reward: -0.5553Creating training bot 2
+ 5055/10000 [==============>...............] - ETA: 1:27 - reward: 2.3373Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 0.4948
+2 episodes - episode_reward: 5765.951 [-313.792, 11845.694] - loss: 8852.518 - mean_q: 670.695 - mean_eps: 0.050
+
+Interval 29 (280000 steps performed)
+   55/10000 [..............................] - ETA: 2:56 - reward: 0.8576Creating training bot 2
+  775/10000 [=>............................] - ETA: 2:44 - reward: 12.3293Creating training bot 2
+ 4324/10000 [===========>..................] - ETA: 1:40 - reward: 4.9661Creating training bot 2
+ 5057/10000 [==============>...............] - ETA: 1:27 - reward: 4.1837Creating training bot 2
+ 6026/10000 [=================>............] - ETA: 1:10 - reward: 4.8413Creating training bot 2
+ 6662/10000 [==================>...........] - ETA: 59s - reward: 5.8908Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 3.7245
+6 episodes - episode_reward: 5401.236 [-6823.170, 11888.398] - loss: 8770.425 - mean_q: 689.278 - mean_eps: 0.050
+
+Interval 30 (290000 steps performed)
+   58/10000 [..............................] - ETA: 2:54 - reward: 0.5200Creating training bot 2
+ 1912/10000 [====>.........................] - ETA: 2:23 - reward: 3.0630Creating training bot 2
+ 5057/10000 [==============>...............] - ETA: 1:27 - reward: 1.5847Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 0.5605
+3 episodes - episode_reward: 1992.622 [-1999.855, 5856.267] - loss: 8450.035 - mean_q: 712.620 - mean_eps: 0.050
+
+Interval 31 (300000 steps performed)
+   58/10000 [..............................] - ETA: 2:57 - reward: 0.1165Creating training bot 2
+ 5059/10000 [==============>...............] - ETA: 1:27 - reward: 2.3250Creating training bot 2
+ 6820/10000 [===================>..........] - ETA: 56s - reward: 2.5037Creating training bot 2
+ 7335/10000 [=====================>........] - ETA: 47s - reward: 3.5328Creating training bot 2
+ 7653/10000 [=====================>........] - ETA: 41s - reward: 4.6228Creating training bot 2
+ 8777/10000 [=========================>....] - ETA: 21s - reward: 4.9024Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 4.6336
+6 episodes - episode_reward: 6775.992 [-2400.459, 11765.923] - loss: 8320.314 - mean_q: 674.930 - mean_eps: 0.050
+
+Interval 32 (310000 steps performed)
+   60/10000 [..............................] - ETA: 2:54 - reward: 83.9015Creating training bot 2
+ 5062/10000 [==============>...............] - ETA: 1:27 - reward: -2.3022Creating training bot 2
+ 7404/10000 [=====================>........] - ETA: 46s - reward: -1.0481Creating training bot 2
+ 7806/10000 [======================>.......] - ETA: 38s - reward: 0.3950Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 0.0735
+4 episodes - episode_reward: 1597.717 [-16696.756, 10849.846] - loss: 7306.864 - mean_q: 649.260 - mean_eps: 0.050
+
+Interval 33 (320000 steps performed)
+   64/10000 [..............................] - ETA: 2:56 - reward: -1.7678Creating training bot 2
+  483/10000 [>.............................] - ETA: 2:49 - reward: 19.2054Creating training bot 2
+ 2470/10000 [======>.......................] - ETA: 2:13 - reward: 5.7798Creating training bot 2
+ 4416/10000 [============>.................] - ETA: 1:39 - reward: 4.7105Creating training bot 2
+ 5064/10000 [==============>...............] - ETA: 1:27 - reward: 3.6866Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 0.9338
+5 episodes - episode_reward: 3257.506 [-2491.449, 9389.323] - loss: 9488.268 - mean_q: 687.700 - mean_eps: 0.050
+
+Interval 34 (330000 steps performed)
+   64/10000 [..............................] - ETA: 2:54 - reward: -3.3865Creating training bot 2
+ 5067/10000 [==============>...............] - ETA: 1:27 - reward: -1.6353Creating training bot 2
+ 5682/10000 [================>.............] - ETA: 1:16 - reward: 0.2571Creating training bot 2
+ 7852/10000 [======================>.......] - ETA: 38s - reward: 1.7068Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 2.0776
+4 episodes - episode_reward: 1018.340 [-9551.029, 11916.962] - loss: 8376.732 - mean_q: 687.225 - mean_eps: 0.050
+
+Interval 35 (340000 steps performed)
+   68/10000 [..............................] - ETA: 2:55 - reward: -1.8253Creating training bot 2
+ 1504/10000 [===>..........................] - ETA: 2:30 - reward: 4.4414Creating training bot 2
+ 1917/10000 [====>.........................] - ETA: 2:23 - reward: 8.5933Creating training bot 2
+ 5067/10000 [==============>...............] - ETA: 1:27 - reward: 1.3434Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 0.4414
+4 episodes - episode_reward: 3543.937 [-9672.365, 9763.540] - loss: 9270.589 - mean_q: 699.392 - mean_eps: 0.050
+
+Interval 36 (350000 steps performed)
+   70/10000 [..............................] - ETA: 2:56 - reward: -2.4733Creating training bot 2
+  596/10000 [>.............................] - ETA: 2:46 - reward: 15.6870Creating training bot 2
+ 5071/10000 [==============>...............] - ETA: 1:27 - reward: 1.7790Creating training bot 2
+ 8007/10000 [=======================>......] - ETA: 35s - reward: 2.2038Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 1.7153
+4 episodes - episode_reward: 3814.818 [-2559.617, 9522.558] - loss: 8852.673 - mean_q: 765.399 - mean_eps: 0.050
+
+Interval 37 (360000 steps performed)
+   70/10000 [..............................] - ETA: 2:56 - reward: -3.0428Creating training bot 2
+ 3494/10000 [=========>....................] - ETA: 1:55 - reward: 4.4587Creating training bot 2
+ 5073/10000 [==============>...............] - ETA: 1:27 - reward: 3.4908Creating training bot 2
+ 5496/10000 [===============>..............] - ETA: 1:19 - reward: 5.2243Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 4.3889
+4 episodes - episode_reward: 7055.033 [-711.792, 15827.840] - loss: 9275.043 - mean_q: 867.028 - mean_eps: 0.050
+
+Interval 38 (370000 steps performed)
+   72/10000 [..............................] - ETA: 2:53 - reward: 2.2946Creating training bot 2
+  379/10000 [>.............................] - ETA: 2:49 - reward: 28.5828Creating training bot 2
+ 5074/10000 [==============>...............] - ETA: 1:26 - reward: 1.1966Creating training bot 2
+ 7592/10000 [=====================>........] - ETA: 42s - reward: 1.5699Creating training bot 2
+ 8489/10000 [========================>.....] - ETA: 26s - reward: 2.4744Creating training bot 2
+10000/10000 [==============================] - 177s 18ms/step - reward: 1.9802
+5 episodes - episode_reward: 7242.248 [-4762.413, 15347.460] - loss: 9396.714 - mean_q: 959.375 - mean_eps: 0.050
+
+Interval 39 (380000 steps performed)
+   76/10000 [..............................] - ETA: 2:53 - reward: -3.1966Creating training bot 2
+ 2745/10000 [=======>......................] - ETA: 2:07 - reward: 4.6619Creating training bot 2
+ 3915/10000 [==========>...................] - ETA: 1:47 - reward: 6.1855Creating training bot 2
+ 5075/10000 [==============>...............] - ETA: 1:26 - reward: 4.7774Creating training bot 2
+10000/10000 [==============================] - 176s 18ms/step - reward: 3.1517
+4 episodes - episode_reward: 5751.923 [-1476.030, 13069.924] - loss: 8733.126 - mean_q: 966.659 - mean_eps: 0.050
+
+Interval 40 (390000 steps performed)
+   77/10000 [..............................] - ETA: 2:54 - reward: 2.2020Creating training bot 2
+ 5078/10000 [==============>...............] - ETA: 1:26 - reward: 1.4962Creating training bot 2
+10000/10000 [==============================] - 176s 18ms/step - reward: 0.4030
+2 episodes - episode_reward: 7438.604 [7428.553, 7448.654] - loss: 8714.574 - mean_q: 980.818 - mean_eps: 0.050
+
+Interval 41 (400000 steps performed)
+   78/10000 [..............................] - ETA: 2:54 - reward: -2.2759Creating training bot 2
+  644/10000 [>.............................] - ETA: 2:44 - reward: 13.4831Creating training bot 2
+ 5080/10000 [==============>...............] - ETA: 1:26 - reward: 3.3394Creating training bot 2
+10000/10000 [==============================] - 176s 18ms/step - reward: 1.3602
+3 episodes - episode_reward: 4464.424 [-3752.988, 8895.845] - loss: 9410.000 - mean_q: 993.678 - mean_eps: 0.050
+
+Interval 42 (410000 steps performed)
+   80/10000 [..............................] - ETA: 2:55 - reward: -0.1973Creating training bot 2
+ 5081/10000 [==============>...............] - ETA: 1:26 - reward: 2.6070Creating training bot 2
+ 5575/10000 [===============>..............] - ETA: 1:17 - reward: 4.2791Creating training bot 2
+ 6877/10000 [===================>..........] - ETA: 54s - reward: 4.5530Creating training bot 2
+10000/10000 [==============================] - 176s 18ms/step - reward: 3.7898
+4 episodes - episode_reward: 6994.906 [-3382.971, 13273.244] - loss: 9167.207 - mean_q: 1012.047 - mean_eps: 0.050
+
+Interval 43 (420000 steps performed)
+   84/10000 [..............................] - ETA: 2:54 - reward: 0.9219Creating training bot 2
+ 5085/10000 [==============>...............] - ETA: 1:26 - reward: -2.1147Creating training bot 2
+10000/10000 [==============================] - 176s 18ms/step - reward: -1.5332
+2 episodes - episode_reward: -2098.390 [-10830.917, 6634.136] - loss: 8358.254 - mean_q: 1004.440 - mean_eps: 0.050
+
+Interval 44 (430000 steps performed)
+   86/10000 [..............................] - ETA: 2:53 - reward: -3.4533Creating training bot 2
+ 1286/10000 [==>...........................] - ETA: 2:32 - reward: 7.9208Creating training bot 2
+ 5086/10000 [==============>...............] - ETA: 1:26 - reward: 2.8593Creating training bot 2
+10000/10000 [==============================] - 175s 18ms/step - reward: 1.0187
+3 episodes - episode_reward: 3322.296 [-4875.348, 10513.133] - loss: 7950.132 - mean_q: 847.503 - mean_eps: 0.050
+
+Interval 45 (440000 steps performed)
+   86/10000 [..............................] - ETA: 2:53 - reward: 0.1720Creating training bot 2
+ 1518/10000 [===>..........................] - ETA: 2:28 - reward: 5.8697Creating training bot 2
+ 5086/10000 [==============>...............] - ETA: 1:26 - reward: 1.6603Creating training bot 2
+ 8775/10000 [=========================>....] - ETA: 21s - reward: 1.3183Creating training bot 2
+10000/10000 [==============================] - 175s 18ms/step - reward: 1.2554
+4 episodes - episode_reward: 1809.903 [-4346.920, 8928.868] - loss: 7866.283 - mean_q: 687.122 - mean_eps: 0.050
+
+Interval 46 (450000 steps performed)
+   88/10000 [..............................] - ETA: 2:54 - reward: 0.5772Creating training bot 2
+ 3377/10000 [=========>....................] - ETA: 1:55 - reward: 4.2339Creating training bot 2
+ 5089/10000 [==============>...............] - ETA: 1:25 - reward: 3.2824Creating training bot 2
+ 5498/10000 [===============>..............] - ETA: 1:18 - reward: 5.0568Creating training bot 2
+10000/10000 [==============================] - 175s 17ms/step - reward: 2.9863
+4 episodes - episode_reward: 7196.955 [1009.126, 14274.398] - loss: 7840.337 - mean_q: 680.428 - mean_eps: 0.050
+
+Interval 47 (460000 steps performed)
+   90/10000 [..............................] - ETA: 2:52 - reward: -3.0666Creating training bot 2
+ 3763/10000 [==========>...................] - ETA: 1:49 - reward: 1.6935Creating training bot 2
+ 5092/10000 [==============>...............] - ETA: 1:25 - reward: 2.8968Creating training bot 2
+10000/10000 [==============================] - 175s 17ms/step - reward: 0.9651
+3 episodes - episode_reward: 5592.922 [1743.281, 8350.800] - loss: 8366.813 - mean_q: 677.982 - mean_eps: 0.050
+
+Interval 48 (470000 steps performed)
+   92/10000 [..............................] - ETA: 2:51 - reward: -3.4564Creating training bot 2
+ 4513/10000 [============>.................] - ETA: 1:35 - reward: 0.8142Creating training bot 2
+ 5094/10000 [==============>...............] - ETA: 1:25 - reward: 0.6899Creating training bot 2
+ 6226/10000 [=================>............] - ETA: 1:05 - reward: 2.1178Creating training bot 2
+ 6974/10000 [===================>..........] - ETA: 52s - reward: 3.3518Creating training bot 2
+10000/10000 [==============================] - 175s 17ms/step - reward: 1.9135
+5 episodes - episode_reward: 3661.822 [-5420.598, 10190.196] - loss: 7284.377 - mean_q: 671.808 - mean_eps: 0.050
+
+Interval 49 (480000 steps performed)
+   95/10000 [..............................] - ETA: 2:52 - reward: 0.4133Creating training bot 2
+ 3564/10000 [=========>....................] - ETA: 1:52 - reward: 2.2144Creating training bot 2
+ 4933/10000 [=============>................] - ETA: 1:28 - reward: 3.6974Creating training bot 2
+ 5095/10000 [==============>...............] - ETA: 1:25 - reward: 3.6377Creating training bot 2
+10000/10000 [==============================] - 175s 17ms/step - reward: 2.6072
+4 episodes - episode_reward: 3567.029 [-4229.348, 10347.104] - loss: 8071.138 - mean_q: 634.522 - mean_eps: 0.050
+
+Interval 50 (490000 steps performed)
+   98/10000 [..............................] - ETA: 2:53 - reward: 0.8123Creating training bot 2
+ 5099/10000 [==============>...............] - ETA: 1:25 - reward: 0.7673Creating training bot 2
+ 7219/10000 [====================>.........] - ETA: 48s - reward: 1.4282Creating training bot 2
+10000/10000 [==============================] - 175s 17ms/step - reward: 0.3553
+3 episodes - episode_reward: 5957.718 [3832.861, 7612.356] - loss: 8149.869 - mean_q: 615.759 - mean_eps: 0.050
+
+Interval 51 (500000 steps performed)
+   99/10000 [..............................] - ETA: 2:53 - reward: -3.3449Creating training bot 2
+ 5100/10000 [==============>...............] - ETA: 1:25 - reward: -2.8927Creating training bot 2
+10000/10000 [==============================] - 173s 17ms/step - reward: -1.8427
+2 episodes - episode_reward: -10771.690 [-14418.840, -7124.539] - loss: 7462.904 - mean_q: 622.820 - mean_eps: 0.050
+
+Interval 52 (510000 steps performed)
+   99/10000 [..............................] - ETA: 2:45 - reward: -2.2340Creating training bot 2
+ 1619/10000 [===>..........................] - ETA: 2:20 - reward: 5.8504Creating training bot 2
+ 5103/10000 [==============>...............] - ETA: 1:22 - reward: 1.6525Creating training bot 2
+10000/10000 [==============================] - 168s 17ms/step - reward: 0.1259
+3 episodes - episode_reward: 1587.256 [-3900.898, 9725.904] - loss: 8224.998 - mean_q: 624.372 - mean_eps: 0.050
+
+Interval 53 (520000 steps performed)
+  103/10000 [..............................] - ETA: 2:46 - reward: -1.5667Creating training bot 2
+ 5104/10000 [==============>...............] - ETA: 1:22 - reward: -1.4877Creating training bot 2
+10000/10000 [==============================] - 168s 17ms/step - reward: 0.2626
+2 episodes - episode_reward: -7385.091 [-7432.515, -7337.667] - loss: 7858.543 - mean_q: 607.852 - mean_eps: 0.050
+
+Interval 54 (530000 steps performed)
+  104/10000 [..............................] - ETA: 2:52 - reward: 2.0938Creating training bot 2
+ 5105/10000 [==============>...............] - ETA: 1:25 - reward: -1.6917Creating training bot 2
+10000/10000 [==============================] - 176s 18ms/step - reward: -1.3258
+2 episodes - episode_reward: 790.054 [-8864.778, 10444.886] - loss: 7796.984 - mean_q: 593.438 - mean_eps: 0.050
+
+Interval 55 (540000 steps performed)
+  107/10000 [..............................] - ETA: 2:46 - reward: -3.3043Creating training bot 2
+ 5109/10000 [==============>...............] - ETA: 1:22 - reward: -1.8741Creating training bot 2
+10000/10000 [==============================] - 168s 17ms/step - reward: -0.4054
+2 episodes - episode_reward: -7095.083 [-9218.471, -4971.695] - loss: 7038.097 - mean_q: 555.667 - mean_eps: 0.050
+
+Interval 56 (550000 steps performed)
+  110/10000 [..............................] - ETA: 2:46 - reward: 2.1169Creating training bot 2
+ 5110/10000 [==============>...............] - ETA: 1:22 - reward: 0.6506Creating training bot 2
+10000/10000 [==============================] - 168s 17ms/step - reward: -0.9558
+2 episodes - episode_reward: 4421.219 [3088.612, 5753.825] - loss: 7627.260 - mean_q: 549.750 - mean_eps: 0.050
+
+Interval 57 (560000 steps performed)
+  110/10000 [..............................] - ETA: 2:45 - reward: 1.8032Creating training bot 2
+ 5112/10000 [==============>...............] - ETA: 1:22 - reward: -1.1952Creating training bot 2
+10000/10000 [==============================] - 168s 17ms/step - reward: -1.8556
+2 episodes - episode_reward: -9494.544 [-12675.306, -6313.783] - loss: 7292.641 - mean_q: 572.587 - mean_eps: 0.050
+
+Interval 58 (570000 steps performed)
+  114/10000 [..............................] - ETA: 2:46 - reward: -3.1717Creating training bot 2
+ 4009/10000 [===========>..................] - ETA: 1:43 - reward: 0.7465Creating training bot 2
+ 5114/10000 [==============>...............] - ETA: 1:24 - reward: -0.0885Creating training bot 2
+ 8428/10000 [========================>.....] - ETA: 27s - reward: 0.2732Creating training bot 2
+10000/10000 [==============================] - 174s 17ms/step - reward: 0.0184
+4 episodes - episode_reward: -2528.475 [-12807.639, 3378.188] - loss: 7507.640 - mean_q: 550.692 - mean_eps: 0.050
+
+Interval 59 (580000 steps performed)
+  116/10000 [..............................] - ETA: 2:53 - reward: -3.3086Creating training bot 2
+ 5117/10000 [==============>...............] - ETA: 1:25 - reward: -0.7583Creating training bot 2
+10000/10000 [==============================] - 175s 17ms/step - reward: -0.2950
+2 episodes - episode_reward: -3013.900 [-3496.322, -2531.477] - loss: 7857.275 - mean_q: 566.773 - mean_eps: 0.050
+
+Interval 60 (590000 steps performed)
+  116/10000 [..............................] - ETA: 2:52 - reward: 0.0973Creating training bot 2
+ 5117/10000 [==============>...............] - ETA: 1:25 - reward: -0.8034Creating training bot 2
+10000/10000 [==============================] - 175s 17ms/step - reward: -1.2492
+2 episodes - episode_reward: -1593.573 [-4132.750, 945.604] - loss: 7418.280 - mean_q: 551.659 - mean_eps: 0.050
+
+Interval 61 (600000 steps performed)
+  119/10000 [..............................] - ETA: 2:52 - reward: -1.1359Creating training bot 2
+ 2289/10000 [=====>........................] - ETA: 2:13 - reward: 0.8490^C
+Training interrupted. Saving best weights...
+[INFO] Exiting program.
+2025-03-20 04:19:48.519 python[7490:141912] The class 'NSSavePanel' overrides the method identifier.  This method is implemented by class 'NSWindow'
+(py310) jameswoolley@Jamess-MacBook-Pro Tanks-RL % python Train.py
+Creating training bot 2
+2025-03-20 04:25:09.077367: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:354] MLIR V1 optimization pass is not enabled
+2025-03-20 04:25:09.079448: W tensorflow/core/platform/profile_utils/cpu_utils.cc:128] Failed to get CPU frequency: 0 Hz
+Training for 5000000 steps ...
+Creating training bot 2
+Interval 1 (0 steps performed)
+/opt/anaconda3/envs/py310/lib/python3.10/site-packages/keras/engine/training_v1.py:2356: UserWarning: `Model.state_updates` will be removed in a future version. This property should not be used in TensorFlow 2.0, as `updates` are applied automatically.
+  updates=self.state_updates,
+2025-03-20 04:25:09.309 python[12219:228939] +[IMKClient subclass]: chose IMKClient_Modern
+2025-03-20 04:25:09.309 python[12219:228939] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+ 3726/10000 [==========>...................] - ETA: 1:48 - reward: -3.3013^C
+Training interrupted. Saving best weights...
+[INFO] Exiting program.
+(py310) jameswoolley@Jamess-MacBook-Pro Tanks-RL % python test.py
+Creating training bot 2
+2025-03-20 04:30:12.324954: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:354] MLIR V1 optimization pass is not enabled
+2025-03-20 04:30:12.327250: W tensorflow/core/platform/profile_utils/cpu_utils.cc:128] Failed to get CPU frequency: 0 Hz
+Training for 5000000 steps ...
+Creating training bot 2
+Interval 1 (0 steps performed)
+/opt/anaconda3/envs/py310/lib/python3.10/site-packages/keras/engine/training_v1.py:2356: UserWarning: `Model.state_updates` will be removed in a future version. This property should not be used in TensorFlow 2.0, as `updates` are applied automatically.
+  updates=self.state_updates,
+2025-03-20 04:30:12.563 python[12318:232731] +[IMKClient subclass]: chose IMKClient_Modern
+2025-03-20 04:30:12.563 python[12318:232731] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+ 3066/10000 [========>.....................] - ETA: 1:58 - reward: 0.5380 
+New best reward: 1649.40 - Saved weights
+Creating training bot 2
+ 4999/10000 [=============>................] - ETA: 1:25 - reward: 0.8706
+New best reward: 2701.86 - Saved weights
+Creating training bot 2
+ 7650/10000 [=====================>........] - ETA: 39s - reward: 2.0329 
+New best reward: 11233.58 - Saved weights
+Creating training bot 2
+10000/10000 [==============================] - 170s 17ms/step - reward: 2.1244
+3 episodes - episode_reward: 5194.944 [1649.396, 11233.579] - loss: 4168.161 - mean_q: 216.770 - mean_eps: 0.840
+
+Interval 2 (10000 steps performed)
+    1/10000 [..............................] - ETA: 1:00 - reward: 2.7724Creating training bot 2
+ 5001/10000 [==============>...............] - ETA: 1:24 - reward: 3.3393
+New best reward: 16695.44 - Saved weights
+Creating training bot 2
+ 5928/10000 [================>.............] - ETA: 1:09 - reward: 4.2773Creating training bot 2
+10000/10000 [==============================] - 170s 17ms/step - reward: 2.2116
+3 episodes - episode_reward: 10346.448 [5661.941, 16695.440] - loss: 5734.972 - mean_q: 476.149 - mean_eps: 0.525
+
+Interval 3 (20000 steps performed)
+    4/10000 [..............................] - ETA: 2:48 - reward: -1.5112Creating training bot 2
+ 5003/10000 [==============>...............] - ETA: 1:24 - reward: -0.7489Creating training bot 2
+ 8468/10000 [========================>.....] - ETA: 26s - reward: 0.5014Creating training bot 2
+10000/10000 [==============================] - 171s 17ms/step - reward: 1.1947
+3 episodes - episode_reward: 337.326 [-3740.925, 8022.681] - loss: 5589.208 - mean_q: 590.360 - mean_eps: 0.208
+
+Interval 4 (30000 steps performed)
+    4/10000 [..............................] - ETA: 2:51 - reward: -3.0000Creating training bot 2
+ 5005/10000 [==============>...............] - ETA: 1:24 - reward: 0.2309Creating training bot 2
+ 8889/10000 [=========================>....] - ETA: 18s - reward: 0.8125Creating training bot 2
+10000/10000 [==============================] - 170s 17ms/step - reward: 0.5176
+3 episodes - episode_reward: 4974.301 [1171.062, 7653.093] - loss: 6054.888 - mean_q: 597.161 - mean_eps: 0.050
+
+Interval 5 (40000 steps performed)
+    7/10000 [..............................] - ETA: 2:52 - reward: -2.3388Creating training bot 2
+ 5007/10000 [==============>...............] - ETA: 1:24 - reward: 0.0423Creating training bot 2
+ 6232/10000 [=================>............] - ETA: 1:03 - reward: 1.1780Creating training bot 2
+ 7455/10000 [=====================>........] - ETA: 43s - reward: 2.3974Creating training bot 2
+10000/10000 [==============================] - 171s 17ms/step - reward: 2.3195
+4 episodes - episode_reward: 3949.248 [-2094.172, 10507.560] - loss: 6093.484 - mean_q: 571.900 - mean_eps: 0.050
+
+Interval 6 (50000 steps performed)
+   10/10000 [..............................] - ETA: 2:59 - reward: 1.2771Creating training bot 2
+ 5011/10000 [==============>...............] - ETA: 1:26 - reward: -0.6209Creating training bot 2
+ 5515/10000 [===============>..............] - ETA: 1:17 - reward: 1.0133Creating training bot 2
+10000/10000 [==============================] - 173s 17ms/step - reward: 0.2235
+3 episodes - episode_reward: 3646.976 [-3124.067, 8729.833] - loss: 6909.775 - mean_q: 537.761 - mean_eps: 0.050
+
+Interval 7 (60000 steps performed)
+   11/10000 [..............................] - ETA: 2:48 - reward: -5.9652Creating training bot 2
+ 2073/10000 [=====>........................] - ETA: 2:18 - reward: 2.8604^C
+Training interrupted. Saving best weights...
+[INFO] Exiting program.
+(py310) jameswoolley@Jamess-MacBook-Pro Tanks-RL % python test.py 
+  File "/Users/jameswoolley/Documents/Julia's Things/Tanks-RL/test.py", line 27
+    def test(model, total_episodes=3, path):
+                                      ^^^^
+SyntaxError: non-default argument follows default argument
+(py310) jameswoolley@Jamess-MacBook-Pro Tanks-RL % python test.py
+Creating training bot 2
+2025-03-20 04:58:17.442702: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:354] MLIR V1 optimization pass is not enabled
+2025-03-20 04:58:17.445051: W tensorflow/core/platform/profile_utils/cpu_utils.cc:128] Failed to get CPU frequency: 0 Hz
+Training for 5000000 steps ...
+Creating training bot 2
+Interval 1 (0 steps performed)
+/opt/anaconda3/envs/py310/lib/python3.10/site-packages/keras/engine/training_v1.py:2356: UserWarning: `Model.state_updates` will be removed in a future version. This property should not be used in TensorFlow 2.0, as `updates` are applied automatically.
+  updates=self.state_updates,
+  321/10000 [..............................] - ETA: 2:50 - reward: -0.28922025-03-20 04:58:23.338 python[12955:249982] +[IMKClient subclass]: chose IMKClient_Modern
+2025-03-20 04:58:23.338 python[12955:249982] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+  707/10000 [=>............................] - ETA: 2:40 - reward: 15.2037
+New best reward: 10778.99 - Saved weights
+Creating training bot 2
+ 5001/10000 [==============>...............] - ETA: 1:25 - reward: 1.1535Creating training bot 2
+10000/10000 [==============================] - 170s 17ms/step - reward: 0.3060
+2 episodes - episode_reward: 2884.405 [-5010.175, 10778.985] - loss: 7490.976 - mean_q: 225.026 - mean_eps: 0.840
+
+Interval 2 (10000 steps performed)
+    1/10000 [..............................] - ETA: 1:25 - reward: -3.0000Creating training bot 2
+ 5001/10000 [==============>...............] - ETA: 1:24 - reward: -2.2637Creating training bot 2
+ 7869/10000 [======================>.......] - ETA: 36s - reward: -1.3230Creating training bot 2
+10000/10000 [==============================] - 170s 17ms/step - reward: -0.7882
+3 episodes - episode_reward: -4363.219 [-11320.187, 945.281] - loss: 3900.055 - mean_q: 640.202 - mean_eps: 0.525
+
+Interval 3 (20000 steps performed)
+    4/10000 [..............................] - ETA: 2:49 - reward: -2.1457Creating training bot 2
+ 5005/10000 [==============>...............] - ETA: 1:24 - reward: -0.4818Creating training bot 2
+ 7916/10000 [======================>.......] - ETA: 35s - reward: 0.4550Creating training bot 2
+10000/10000 [==============================] - 170s 17ms/step - reward: 1.0757
+3 episodes - episode_reward: 2043.515 [-2402.758, 6043.405] - loss: 5415.766 - mean_q: 780.267 - mean_eps: 0.208
+
+Interval 4 (30000 steps performed)
+    4/10000 [..............................] - ETA: 2:52 - reward: -2.9999Creating training bot 2
+ 5007/10000 [==============>...............] - ETA: 1:26 - reward: -1.3879Creating training bot 2
+10000/10000 [==============================] - 176s 18ms/step - reward: -0.8259
+2 episodes - episode_reward: 87.670 [-6931.144, 7106.484] - loss: 5537.256 - mean_q: 717.847 - mean_eps: 0.050
+
+Interval 5 (40000 steps performed)
+    7/10000 [..............................] - ETA: 2:56 - reward: -2.9913Creating training bot 2
+ 5009/10000 [==============>...............] - ETA: 1:29 - reward: 1.7146Creating training bot 2
+10000/10000 [==============================] - 179s 18ms/step - reward: -0.3845
+2 episodes - episode_reward: 3639.409 [-1333.645, 8612.463] - loss: 5196.472 - mean_q: 591.027 - mean_eps: 0.050
+
+Interval 6 (50000 steps performed)
+   10/10000 [..............................] - ETA: 2:58 - reward: 0.3563Creating training bot 2
+ 1846/10000 [====>.........................] - ETA: 2:25 - reward: 3.8716Creating training bot 2
+ 5011/10000 [==============>...............] - ETA: 1:29 - reward: -0.6750Creating training bot 2
+10000/10000 [==============================] - 179s 18ms/step - reward: 0.2727
+3 episodes - episode_reward: -5271.894 [-12429.567, 7173.312] - loss: 4606.339 - mean_q: 502.813 - mean_eps: 0.050
+
+Interval 7 (60000 steps performed)
+   10/10000 [..............................] - ETA: 2:58 - reward: -2.1379Creating training bot 2
+ 4823/10000 [=============>................] - ETA: 1:32 - reward: 0.3538Creating training bot 2
+ 5012/10000 [==============>...............] - ETA: 1:29 - reward: 0.4349Creating training bot 2
+10000/10000 [==============================] - 175s 17ms/step - reward: 1.6829
+3 episodes - episode_reward: 2764.023 [476.027, 6084.587] - loss: 4652.643 - mean_q: 515.875 - mean_eps: 0.050
+
+Interval 8 (70000 steps performed)
+   13/10000 [..............................] - ETA: 2:49 - reward: -3.0000
+New best reward: 14605.20 - Saved weights
+Creating training bot 2
+ 2056/10000 [=====>........................] - ETA: 2:14 - reward: -1.5008^C
+Training interrupted. Saving best weights...
+[INFO] Exiting program.
+(py310) jameswoolley@Jamess-MacBook-Pro Tanks-RL % python test.py
+Creating training bot 2
+2025-03-20 05:19:47.409648: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:354] MLIR V1 optimization pass is not enabled
+2025-03-20 05:19:47.411875: W tensorflow/core/platform/profile_utils/cpu_utils.cc:128] Failed to get CPU frequency: 0 Hz
+Training for 5000000 steps ...
+Creating training bot 2
+Interval 1 (0 steps performed)
+/opt/anaconda3/envs/py310/lib/python3.10/site-packages/keras/engine/training_v1.py:2356: UserWarning: `Model.state_updates` will be removed in a future version. This property should not be used in TensorFlow 2.0, as `updates` are applied automatically.
+  updates=self.state_updates,
+2025-03-20 05:19:47.640 python[13573:259946] +[IMKClient subclass]: chose IMKClient_Modern
+2025-03-20 05:19:47.640 python[13573:259946] +[IMKInputSession subclass]: chose IMKInputSession_Modern
+ 4999/10000 [=============>................] - ETA: 1:26 - reward: -3.4043
+New best reward: -17024.10 - Saved weights
+Creating training bot 2
+10000/10000 [==============================] - 171s 17ms/step - reward: -3.3577
+1 episodes - episode_reward: -17024.097 [-17024.097, -17024.097] - loss: 7.132 - mean_q: -30.402 - mean_eps: 0.840
+
+Interval 2 (10000 steps performed)
+    1/10000 [..............................] - ETA: 1:15 - reward: -2.9999
+New best reward: -16559.31 - Saved weights
+Creating training bot 2
+ 3171/10000 [========>.....................] - ETA: 1:55 - reward: -0.0872
+New best reward: -252.47 - Saved weights
+Creating training bot 2
+ 5001/10000 [==============>...............] - ETA: 1:24 - reward: -1.2905Creating training bot 2
+ 7770/10000 [======================>.......] - ETA: 37s - reward: 0.3506  
+New best reward: 9213.51 - Saved weights
+Creating training bot 2
+ 8171/10000 [=======================>......] - ETA: 31s - reward: 0.4290^C
+Training interrupted. Saving best weights...
+[INFO] Exiting program.
+(py310) jameswoolley@Jamess-MacBook-Pro Tanks-RL % 

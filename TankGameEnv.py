@@ -246,6 +246,17 @@ class TankEnv(Env):
             # Apply tanh activation function
             reward += math.tanh(5 * (0.5 - normalized_angle))*3
             
+            # reward bullet based on how close it is to the enemy tank
+            for bullet in self.bullets:
+                # if the bullet is not from enemy
+                if bullet.tank == self.player_tank:
+                    angle_diff = (math.degrees(bullet.angle) - target_angle)%360
+                    normalized_angle = angle_diff / 180
+                    reward += math.tanh(5 * (0.5 - normalized_angle))*3
+
+        
+        
+            
         info = {}
 
         self.state = self.get_all_info()
@@ -278,6 +289,8 @@ class TankEnv(Env):
         self.player_tank = Tank(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2, (0, 150, 0))
         self.tanks.append(self.player_tank)
         self.create_enemy_tanks(mode)
+        self.skill_level = 0
+        self.training_progress = 0
 
         # Create Status Bar
         self.status_bar = StatusBar(PLACEMENT, self.player_tank)
