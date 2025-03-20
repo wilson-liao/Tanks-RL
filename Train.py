@@ -103,7 +103,7 @@ class TrainingCallback(Callback):
         plt.legend()
         plt.grid()
         plt.show()
-        graph_path = "training_logs/reward_progression.png"
+        graph_path = "reward_progression.png"
         plt.savefig(graph_path, dpi=300)
 
         sys.exit(0)

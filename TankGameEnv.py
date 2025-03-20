@@ -207,8 +207,9 @@ class TankEnv(Env):
             reward -= 50
 
         # Player destroys enemy
-        if destroyed:
-            reward += 500
+        # for tank in self.tanks:
+        #     if tank != self.player_tank and tank.destroyed:
+        #         reward += 500
 
         done = False
         # Player wins
