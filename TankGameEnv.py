@@ -64,7 +64,8 @@ class TankEnv(Env):
 
         # Move forward, move backward, turn left, turn right,
         # turn turret left, turn turret right, shoot, do nothing
-        self.action_space = Discrete(8)
+        # self.action_space = Discrete(8)
+        self.action_space = Discrete(3)
         self.skill_level = 0
         self.training_progress = 0
 
@@ -132,31 +133,39 @@ class TankEnv(Env):
 
 
         # Convert action to game controls
-        if action == 0:  # Move forward
-            self.player_tank.move()
-        elif action == 1:  # Move backward
-            self.player_tank.move_backward()
-        elif action == 2:  # Rotate left
-            self.player_tank.rotate(-1)
-        elif action == 3:  # Rotate right 
-            self.player_tank.rotate(1)
-        elif action == 4:  # Rotate turret left
-            self.player_tank.rotate_shooter(-1)
-        elif action == 5:  # Rotate turret right
-            self.player_tank.rotate_shooter(1)
-        elif action == 6:  # Shoot
-            self.player_tank.shoot()
-        elif action == 7:  # Idle
-            pass
+        # if action == 0:  # Move forward
+        #     self.player_tank.move()
+        # elif action == 1:  # Move backward
+        #     self.player_tank.move_backward()
+        # elif action == 2:  # Rotate left
+        #     self.player_tank.rotate(-1)
+        # elif action == 3:  # Rotate right 
+        #     self.player_tank.rotate(1)
+        # elif action == 4:  # Rotate turret left
+        #     self.player_tank.rotate_shooter(-1)
+        # elif action == 5:  # Rotate turret right
+        #     self.player_tank.rotate_shooter(1)
+        # elif action == 6:  # Shoot
+        #     self.player_tank.shoot()
+        # elif action == 7:  # Idle
+        #     pass
         # print(f"Action: {action}")
+        if action ==0:
+            self.player_tank.rotate_shooter(-1)
+        elif action == 1:  # Rotate turret right
+            self.player_tank.rotate_shooter(1)
+        elif action == 2:  # Shoot
+            self.player_tank.shoot()
+        elif action == 3:  # Idle
+            pass
         
         # # Enemy moves with collision checking
-        for tank in self.tanks:
-            if tank != self.player_tank:
-                if isinstance(tank, TrainingBot):
-                    tank.take_action(self.skill_level)
-                else:
-                    tank.take_action()
+        # for tank in self.tanks:
+        #     if tank != self.player_tank:
+        #         if isinstance(tank, TrainingBot):
+        #             tank.take_action(self.skill_level)
+        #         else:
+        #             tank.take_action()
                 
         
 
@@ -191,7 +200,7 @@ class TankEnv(Env):
         # Player hits enemy
         for tank in self.tanks:
             if tank != self.player_tank and tank.health < enemy_health_prev[tank]:
-                reward += 35
+                reward += 5000
 
         # Player gets hit
         if player_health_prev > self.player_tank.health:

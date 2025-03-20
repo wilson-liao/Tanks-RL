@@ -12,8 +12,10 @@ TANK_WIDTH = 40
 TANK_HEIGHT = 60
 
 # Actions 
-ACTIONS = ["move", "move_backward", "rotate_clockwise", "rotate_counterclockwise", 
+ACTIONS_ = ["move", "move_backward", "rotate_clockwise", "rotate_counterclockwise", 
            "shoot", "rotate_shooter_clockwise", "rotate_shooter_counterclockwise",
+           "idle"]
+ACTIONS = [ "shoot", "rotate_shooter_clockwise", "rotate_shooter_counterclockwise",
            "idle"]
 
 # Bullet settings
