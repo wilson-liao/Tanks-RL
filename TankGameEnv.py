@@ -64,7 +64,7 @@ class TankEnv(Env):
 
         # Move forward, move backward, turn left, turn right,
         # turn turret left, turn turret right, shoot, do nothing
-        self.action_space = Discrete(8)
+        self.action_space = Discrete(3)
 
 
         # Observation space includes:
@@ -78,7 +78,7 @@ class TankEnv(Env):
         # - Enemy cooldowns
         # - Bullet positions (x, y for each bullet)
         # - Bullet distances to player (distance for each bullet)
-        self.max_bullets = 10
+        self.max_bullets = 2
         enemy_position_size = NUMBER_OF_ENEMIES * 2  # x,y for each enemy
         enemy_health_size = NUMBER_OF_ENEMIES  # health for each enemy
         enemy_cooldown_size = NUMBER_OF_ENEMIES  # cooldown for each enemy
@@ -122,7 +122,7 @@ class TankEnv(Env):
 
         self.state = self.get_all_info()
         self.train_time = 0
-        self.reward = 0
+        self.total_reward_before_death = 0
 
 
 
@@ -134,22 +134,33 @@ class TankEnv(Env):
         player_bullets_before = [(bullet.x, bullet.y) for bullet in self.player_tank.bullets]
 
         # Convert action to game controls
+        # if action == 0:  # Move forward
+        #     self.player_tank.move()
+        # elif action == 1:  # Move backward
+        #     self.player_tank.move_backward()
+        # elif action == 2:  # Rotate left
+        #     self.player_tank.rotate(-1)
+        # elif action == 3:  # Rotate right 
+        #     self.player_tank.rotate(1)
+        # elif action == 4:  # Rotate turret left
+        #     self.player_tank.rotate_shooter(-1)
+        # elif action == 5:  # Rotate turret right
+        #     self.player_tank.rotate_shooter(1)
+        # elif action == 6:  # Shoot
+        #     self.player_tank.shoot()
+        # elif action == 7:  # Idle
+        #     pass
+
         if action == 0:  # Move forward
-            self.player_tank.move()
-        elif action == 1:  # Move backward
-            self.player_tank.move_backward()
-        elif action == 2:  # Rotate left
-            self.player_tank.rotate(-1)
-        elif action == 3:  # Rotate right 
-            self.player_tank.rotate(1)
-        elif action == 4:  # Rotate turret left
-            self.player_tank.rotate_shooter(-1)
-        elif action == 5:  # Rotate turret right
-            self.player_tank.rotate_shooter(1)
-        elif action == 6:  # Shoot
             self.player_tank.shoot()
-        elif action == 7:  # Idle
+        elif action == 1:  # Rotate turret right
+            self.player_tank.rotate_shooter(1)
+        elif action == 2:  # Rotate turret left
+            self.player_tank.rotate_shooter(-1)
+        else:
             pass
+
+
         # print(f"Action: {action}")
         
         # Enemy moves with collision checking
@@ -178,47 +189,41 @@ class TankEnv(Env):
                     bullet.move()
         self.update_objects()
 
-
-        self.reward = 0.1
-        # Wall collision penalty
-        # if self.collision_detector.check_wall_collision(self.player_tank):
-        #     reward -= 10
-
-
         # Check collisions
         player_health_prev = self.player_tank.health
         enemy_health_prev = {tank: tank.health for tank in self.tanks if tank != self.player_tank}
         self.bullets, self.tanks, self.walls, destroyed = \
             self.collision_detector.check_all_collisions(self.player_tank, self.tanks, self.walls, self.bullets)
         if destroyed:
-            print("DESTROYED")
+            # print("DESTROYED")
             self.status_bar.player_score += 1
 
+        # Calculate rewards with better scaling
+        reward = 0.0  # No constant reward
 
-
-
-        # Player hits enemy (scaled from 50 to 0.5)
+        reward = self.add_trajectory_reward(reward)
+        
+        # Reward for hitting enemy (scaled down)
         for tank in self.tanks:
             if tank != self.player_tank and tank.health < enemy_health_prev[tank]:
-                self.reward += 150
+                reward += 1.0  # More reasonable reward
 
-        # Player gets hit (scaled from -50 to -0.5)
+        # Penalty for getting hit (scaled down)
         if player_health_prev > self.player_tank.health:
-            self.reward -= 50
-
-        # Player destroys enemy (scaled from 50 to 1.0)
+            reward -= 1.0  # More reasonable penalty
+        
+        # Reward for destroying enemy (scaled down)
         if destroyed:
-            self.reward += 500
-            
-        # Reward for bullet trajectory alignment with enemy tanks
-        # self.reward = self.add_trajectory_reward(self.reward)
+            reward += 5.0  # More reasonable reward
 
-
+        
+        # Remove the penalty for not aiming at enemy
+        
         done = False
         # Player wins (scaled reward based on remaining health)
         if len(self.tanks) == 1 and self.player_tank in self.tanks:
             time_factor = 1 - (self.train_time / TRAIN_TIME_LIMIT)  # Higher reward for winning faster
-            self.reward += 500 + (self.player_tank.health / TANK_HEALTH) * time_factor  # Normalized between 0 and 1
+            reward += 10 + (self.player_tank.health / TANK_HEALTH) * time_factor * 5  # Normalized between 0 and 1
             done = True
             self.train_time = 0
 
@@ -226,7 +231,7 @@ class TankEnv(Env):
         if self.player_tank.health <= 0:
             total_enemy_health = sum([i.health for i in self.tanks])
             survival_factor = self.train_time / TRAIN_TIME_LIMIT  # Normalize survival time between 0 and 1
-            self.reward -= 500 * (1 - survival_factor)  # Less penalty the longer it survives
+            reward -= 10 * (1 - survival_factor)  # Less penalty the longer it survives
             done = True
             self.train_time = 0
 
@@ -242,11 +247,14 @@ class TankEnv(Env):
             done = True
             self.train_time = 0
 
-        return self.state, self.reward, done, info
+        self.total_reward_before_death += reward
+
+        return self.state, reward, done, info
 
     
     def reset(self, mode = BOT_MODE):
-        print("RESET, last reward:", self.reward)
+        # print("RESET, last reward:", self.total_reward_before_death)
+        self.total_reward_before_death = 0
         # self.game = Game()
         self.game_state_handler = GameStateHandler()
 
@@ -317,10 +325,10 @@ class TankEnv(Env):
 
     def create_enemy_tanks(self, mode = "heuristic"):
         for i in range(NUMBER_OF_ENEMIES):
-            # x = random.randint(30, WINDOW_WIDTH - 30)
-            # y = random.randint(30, WINDOW_HEIGHT - 30)
-            x = 100
-            y = 100
+            x = random.randint(30, WINDOW_WIDTH - 30)
+            y = random.randint(30, WINDOW_HEIGHT - 30)
+            # x = 100
+            # y = 100
             while check_spawn_spot_occupied(x, y, self.tanks, self.walls):
                 x = random.randint(30, WINDOW_WIDTH - 30)
                 y = random.randint(30, WINDOW_HEIGHT - 30)
@@ -436,10 +444,10 @@ class TankEnv(Env):
         
         for angle in enemy_angles:
             if abs(self.player_tank.shooter_angle - angle) < ANGLE_TOLERANCE:
-                print("ANGLE MATCH")
+                # print("ANGLE MATCH")
                 reward += 1
-            else:
-                reward -= 1
+            # else:
+            #     reward -= 1
         
         return reward
 

@@ -95,8 +95,13 @@ class Tank:
         rad = math.radians(self.angle)
         
         # Calculate movement based on angle
-        self.x += self.speed * math.sin(rad)
-        self.y -= self.speed * math.cos(rad)
+        move_x = self.speed * math.sin(rad)
+        move_y = self.speed * math.cos(rad)
+        nextPos = (self.x + move_x, self.y + move_y)
+        if nextPos[0] > WINDOW_WIDTH or nextPos[0] < 0 or nextPos[1] > WINDOW_HEIGHT or nextPos[1] < 0:
+            return
+        self.x += move_x
+        self.y -= move_y
     
     def move_backward(self):
         self.prev_x = self.x
@@ -105,8 +110,13 @@ class Tank:
         rad = math.radians(self.angle)
         
         # Calculate movement based on angle but in reverse
-        self.x -= self.speed * math.sin(rad)
-        self.y += self.speed * math.cos(rad)
+        move_x = self.speed * math.sin(rad)
+        move_y = self.speed * math.cos(rad)
+        nextPos = (self.x + move_x, self.y + move_y)
+        if nextPos[0] > WINDOW_WIDTH or nextPos[0] < 0 or nextPos[1] > WINDOW_HEIGHT or nextPos[1] < 0:
+            return
+        self.x -= move_x
+        self.y += move_y
 
 
     def rotate(self, direction):

@@ -116,7 +116,8 @@ class Game:
 
 
             # Check collisions
-            self.bullets, self.tanks, self.walls, destroyed = self.collision_detector.check_all_collisions(self.tanks, self.walls, self.bullets)
+            self.bullets, self.tanks, self.walls, destroyed = \
+                self.collision_detector.check_all_collisions(self.player_tank, self.tanks, self.walls, self.bullets)
             if destroyed:
                 print("DESTROYED")
                 self.status_bar.player_score += 1
@@ -173,12 +174,12 @@ class Game:
             if enemy != self.player_tank:
                 angle = (math.degrees(self.calculate_enemy_angle_from_player((enemy.x, enemy.y)))+90) % 360
                 enemy_angles.append(angle)
-                print(self.player_tank.shooter_angle, angle)
+                # print(self.player_tank.shooter_angle, angle)
 
         
         for angle in enemy_angles:
             if abs(self.player_tank.shooter_angle - angle) < ANGLE_TOLERANCE:
-                print("ANGLE MATCH")
+                # print("ANGLE MATCH")
                 reward += 1
             else:
                 reward -= 1

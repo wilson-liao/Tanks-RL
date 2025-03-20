@@ -50,6 +50,7 @@ class CollisionDetector:
 
 
     def check_collisions(self, group1, group2):
+        destroyed = False
         if len(group1) == 0 or len(group2) == 0:
             return
         key = self.get_collide_key(group1[0], group2[0])
@@ -78,7 +79,8 @@ class CollisionDetector:
                     # Look for registered handler
                     handler = self.collision_handlers.get(key)
                     if handler:
-                        return handler(obj1, obj2)
+                        destroyed = handler(obj1, obj2)
+        return destroyed
     
     def check_all_collisions(self, player_tank, tanks, walls, bullets):
         self.update_objects(tanks, walls, bullets)
