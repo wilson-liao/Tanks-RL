@@ -224,21 +224,28 @@ class TankEnv(Env):
 
         # if barrel is within 3 degrees of the enemy
         # total aiming should be around 50 points
-        if self.get_enemy_locations():
-            target_angle = (math.degrees(self.calculate_enemy_angle(self.player_tank.x, self.player_tank.y, self.get_enemy_locations()[0])) + 90) % 360
-            angle_diff = (self.player_tank.shooter_angle - target_angle)%360
-            # aim_reward = 0
-            if angle_diff <= 45:
-                reward += 0.01
-            if angle_diff <= 10:
-                print("Aimed correctly")
-                reward += 5
-            else:
-                reward -= 1
+        # if self.get_enemy_locations():
+        #     target_angle = (math.degrees(self.calculate_enemy_angle(self.player_tank.x, self.player_tank.y, self.get_enemy_locations()[0])) + 90) % 360
+        #     angle_diff = (self.player_tank.shooter_angle - target_angle)%360
+        #     # aim_reward = 0
+        #     if angle_diff <= 45:
+        #         reward += 0.01
+        #     if angle_diff <= 10:
+        #         print("Aimed correctly")
+        #         reward += 5
+        #     else:
+        #         reward -= 1
             # print("AIM REWARD: ", aim_reward, " TOTAL REWARD: ", reward)
             # reward += (aim_reward/self.training_progress)*80
             # print("REWARD AFTER WEIGHTED SUM: ", reward)
-    
+        if self.get_enemy_locations():
+            target_angle = (math.degrees(self.calculate_enemy_angle(self.player_tank.x, self.player_tank.y, self.get_enemy_locations()[0])) + 90) % 360
+            angle_diff = (self.player_tank.shooter_angle - target_angle)%360
+            # reward -= np.abs(angle_diff)/10
+            normalized_angle = angle_diff / 180.0
+            # Apply tanh activation function
+            reward += math.tanh(5 * (0.5 - normalized_angle))*3
+            
         info = {}
 
         self.state = self.get_all_info()
@@ -374,7 +381,7 @@ class TankEnv(Env):
     
     def get_all_info(self):
         # Instead of returning a tuple of different structures, create a flat numpy array
-        observation = np.zeros(self.observation_space.shape[0], dtype=np.float32)
+        observation = np.zeros(10, dtype=np.float32)
         
         # Player position (2 values)
         player_x, player_y = self.get_player_location()
@@ -406,22 +413,24 @@ class TankEnv(Env):
                 observation[current_idx + i] = enemy.shooter_angle
         
         # Bullet positions
+        # print(observation)
         current_idx += NUMBER_OF_ENEMIES
         bullet_info = self.get_bullet_info()
         for i, (bx, by, _, _) in enumerate(bullet_info):
             if i < self.max_bullets:  # max_bullets from your observation space definition
                 observation[current_idx + i*2] = bx
                 observation[current_idx + i*2 + 1] = by
-        
+                # print(current_idx + i*2 + 1)
+        # print(observation)
         # Wall positions
-        current_idx += self.max_bullets * 2  # max_bullets * 2
-        wall_info = self.get_wall_info()
-        for i, (wx, wy, ww, wh) in enumerate(wall_info):
-            if i < self.max_walls:  # max_walls from your observation space definition
-                observation[current_idx + i*4] = wx
-                observation[current_idx + i*4 + 1] = wy
-                observation[current_idx + i*4 + 2] = ww
-                observation[current_idx + i*4 + 3] = wh
+        # current_idx += self.max_bullets * 2  # max_bullets * 2
+        # wall_info = self.get_wall_info()
+        # for i, (wx, wy, ww, wh) in enumerate(wall_info):
+        #     if i < self.max_walls:  # max_walls from your observation space definition
+        #         observation[current_idx + i*4] = wx
+        #         observation[current_idx + i*4 + 1] = wy
+        #         observation[current_idx + i*4 + 2] = ww
+        #         observation[current_idx + i*4 + 3] = wh
         
         return observation
     
