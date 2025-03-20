@@ -1,7 +1,9 @@
 from gym import Env
+from gym.utils import seeding
 from gym.spaces import Discrete, Box
 import numpy as np
 import random
+import math
 
 from config import *
 from Game import Game
@@ -120,6 +122,8 @@ class TankEnv(Env):
 
         self.state = self.get_all_info()
         self.train_time = 0
+        self.reward = 0
+
 
 
     def step(self, action):
@@ -175,7 +179,7 @@ class TankEnv(Env):
         self.update_objects()
 
 
-        reward = 0.1
+        self.reward = 0.1
         # Wall collision penalty
         # if self.collision_detector.check_wall_collision(self.player_tank):
         #     reward -= 10
@@ -184,37 +188,37 @@ class TankEnv(Env):
         # Check collisions
         player_health_prev = self.player_tank.health
         enemy_health_prev = {tank: tank.health for tank in self.tanks if tank != self.player_tank}
-        self.bullets, self.tanks, self.walls, destroyed = self.collision_detector.check_all_collisions(self.tanks, self.walls, self.bullets)
+        self.bullets, self.tanks, self.walls, destroyed = \
+            self.collision_detector.check_all_collisions(self.player_tank, self.tanks, self.walls, self.bullets)
         if destroyed:
+            print("DESTROYED")
             self.status_bar.player_score += 1
 
 
-        # # Encourage player to move
-        # if self.player_tank.prev_x == self.player_tank.x and self.player_tank.prev_y == self.player_tank.y:
-        #     reward -= 1
+
 
         # Player hits enemy (scaled from 50 to 0.5)
         for tank in self.tanks:
             if tank != self.player_tank and tank.health < enemy_health_prev[tank]:
-                reward += 50
+                self.reward += 150
 
         # Player gets hit (scaled from -50 to -0.5)
         if player_health_prev > self.player_tank.health:
-            reward -= 50
+            self.reward -= 50
 
         # Player destroys enemy (scaled from 50 to 1.0)
         if destroyed:
-            reward += 10
+            self.reward += 500
             
         # Reward for bullet trajectory alignment with enemy tanks
-        # reward = self.add_trajectory_reward(player_bullets_before, reward)
+        # self.reward = self.add_trajectory_reward(self.reward)
+
 
         done = False
         # Player wins (scaled reward based on remaining health)
         if len(self.tanks) == 1 and self.player_tank in self.tanks:
             time_factor = 1 - (self.train_time / TRAIN_TIME_LIMIT)  # Higher reward for winning faster
-            reward += 1.0 * time_factor  # Additional win reward scaled by time taken
-            reward += self.player_tank.health / TANK_HEALTH  # Normalized between 0 and 1
+            self.reward += 500 + (self.player_tank.health / TANK_HEALTH) * time_factor  # Normalized between 0 and 1
             done = True
             self.train_time = 0
 
@@ -222,7 +226,7 @@ class TankEnv(Env):
         if self.player_tank.health <= 0:
             total_enemy_health = sum([i.health for i in self.tanks])
             survival_factor = self.train_time / TRAIN_TIME_LIMIT  # Normalize survival time between 0 and 1
-            reward -= (total_enemy_health / (TANK_HEALTH * NUMBER_OF_ENEMIES)) * (1 - survival_factor)  # Less penalty the longer it survives
+            self.reward -= 500 * (1 - survival_factor)  # Less penalty the longer it survives
             done = True
             self.train_time = 0
 
@@ -238,10 +242,11 @@ class TankEnv(Env):
             done = True
             self.train_time = 0
 
-        return self.state, reward, done, info
+        return self.state, self.reward, done, info
 
     
     def reset(self, mode = BOT_MODE):
+        print("RESET, last reward:", self.reward)
         # self.game = Game()
         self.game_state_handler = GameStateHandler()
 
@@ -278,6 +283,15 @@ class TankEnv(Env):
 
         return self.state
     
+
+    def seed(self, seed=None):
+        """
+        Sets the random seed for the environment.
+        """
+        self.np_random, seed = seeding.np_random(seed)  # Creates a seeded RNG
+        random.seed(seed)  # Seed Python's random module
+        np.random.seed(seed)  # Seed NumPy's random module
+        return [seed]
 
     def render(self, mode='rgb_array'):
         # Original render code
@@ -410,46 +424,38 @@ class TankEnv(Env):
             wall_info.append((wall.x, wall.y, wall.width, wall.height))
         return wall_info
 
-    def add_trajectory_reward(self, bullets_before, reward):
+    def add_trajectory_reward(self, reward):
         """Add reward based on how close bullets are to the line connecting player to enemies"""
-        player_x, player_y = self.player_tank.x, self.player_tank.y
+        enemy_angles = []
+        for enemy in self.tanks:
+            if enemy != self.player_tank:
+                angle = (math.degrees(self.calculate_enemy_angle_from_player((enemy.x, enemy.y)))+90) % 360
+                enemy_angles.append(angle)
+                # print(self.player_tank.shooter_angle, angle)
+
         
-        # Get current bullets to compare with previous positions
-        current_bullets = [(bullet.x, bullet.y) for bullet in self.player_tank.bullets]
-        
-        # Only consider bullets that existed before and still exist (weren't destroyed)
-        for bullet_pos in bullets_before:
-            if bullet_pos in current_bullets:
-                continue
-                
-            # For each enemy, calculate distance from bullet to player-enemy line
-            for tank in self.tanks:
-                if tank == self.player_tank:
-                    continue
-                    
-                # Calculate distance from bullet to line connecting player and enemy
-                distance = self.point_to_line_distance(
-                    bullet_pos[0], bullet_pos[1],  # Bullet position
-                    player_x, player_y,            # Player position
-                    tank.x, tank.y                 # Enemy position
-                )
-                
-                # Reward inversely proportional to distance (closer = better)
-                # Normalize by window diagonal to keep reward in reasonable range
-                max_distance = np.sqrt(WINDOW_WIDTH**2 + WINDOW_HEIGHT**2)
-                alignment_reward = 0.2 * (0.5 - min(distance, max_distance) / max_distance)
-                reward += alignment_reward
+        for angle in enemy_angles:
+            if abs(self.player_tank.shooter_angle - angle) < ANGLE_TOLERANCE:
+                print("ANGLE MATCH")
+                reward += 1
+            else:
+                reward -= 1
         
         return reward
+
     
-    def point_to_line_distance(self, px, py, x1, y1, x2, y2):
-        """Calculate the distance from point (px,py) to line defined by points (x1,y1) and (x2,y2)"""
-        # Line length
-        line_length = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    def calculate_enemy_angle_from_player(self, enemy_position):
+        angle = math.atan2(enemy_position[1] - self.player_tank.y, enemy_position[0] - self.player_tank.x)
+        return angle
+    
+    # def point_to_line_distance(self, px, py, x1, y1, x2, y2):
+    #     """Calculate the distance from point (px,py) to line defined by points (x1,y1) and (x2,y2)"""
+    #     # Line length
+    #     line_length = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
         
-        # If line has zero length, return distance to the point
-        if line_length == 0:
-            return np.sqrt((px - x1)**2 + (py - y1)**2)
+    #     # If line has zero length, return distance to the point
+    #     if line_length == 0:
+    #         return np.sqrt((px - x1)**2 + (py - y1)**2)
         
-        # Calculate the distance using the formula for point-to-line distance
-        return abs((y2 - y1) * px - (x2 - x1) * py + x2 * y1 - y2 * x1) / line_length
+    #     # Calculate the distance using the formula for point-to-line distance
+    #     return abs((y2 - y1) * px - (x2 - x1) * py + x2 * y1 - y2 * x1) / line_length

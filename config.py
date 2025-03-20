@@ -42,8 +42,9 @@ BOT_MODE = "heuristic" # "heuristic" or "random"
 
 #Training settings
 TRAIN_TIME_LIMIT = 5000
-EPISODES = 10000000
+EPISODES = 1000000
 LEARNING_RATE = 0.001
 
 # Testing settings
 TEST_EPISODES = 5
+ANGLE_TOLERANCE = 3

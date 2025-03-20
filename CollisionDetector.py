@@ -26,7 +26,7 @@ class CollisionDetector:
         self.tanks = tanks
         self.walls = walls
         self.bullets = bullets
-
+        self.player_tank = None
     
     def update_objects(self, tanks, walls, bullets):
         self.tanks = tanks
@@ -62,20 +62,27 @@ class CollisionDetector:
             for j in range(i + 1, len(iterList)):
                 obj1 = iterList[i]
                 obj2 = iterList[j]
+
                 if obj1 == obj2:
                     print(f'{obj1} and {obj2} are the same object')
                     continue
                 
-                if self.check_collision(obj1, obj2):
+                data = {
+                    type(obj1).__name__: obj1,
+                    type(obj2).__name__: obj2
+                }
+
+                key = self.get_collide_key(obj1, obj2)
+                if self.check_collision(data[key[0]], data[key[1]]):
                     
                     # Look for registered handler
-                    key = self.get_collide_key(obj1, obj2)
                     handler = self.collision_handlers.get(key)
                     if handler:
                         return handler(obj1, obj2)
     
-    def check_all_collisions(self, tanks, walls, bullets):
+    def check_all_collisions(self, player_tank, tanks, walls, bullets):
         self.update_objects(tanks, walls, bullets)
+        self.player_tank = player_tank
         
         destroyed = False
         self.check_collisions(self.tanks, self.walls)
@@ -115,7 +122,10 @@ class CollisionDetector:
                     del tank
                 except:
                     print(f'Tank {tank} not found in tanks list')
-                return True
+                
+                if self.player_tank in self.tanks:
+                    return True
+                return False
             
             try:
                 self.bullets.remove(bullet)
@@ -165,6 +175,7 @@ class CollisionDetector:
             # print("Collision does not exist between", type(obj1).__name__, "and", type(obj2).__name__)
 
     def check_inbounds(self, tank):
+        # print(tank.x, tank.y)
         # Check x boundaries
         if tank.x < 0:
             tank.x = 1

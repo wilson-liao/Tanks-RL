@@ -10,6 +10,7 @@ from util import *
 from HeuristicBot import HeuristicBot
 from RandomBot import RandomBot
 import random
+import math
 
 class Game:
     def __init__(self, mode = BOT_MODE):
@@ -120,6 +121,7 @@ class Game:
                 print("DESTROYED")
                 self.status_bar.player_score += 1
 
+            self.add_trajectory_reward(reward=0)
 
             # Update display
             pygame.display.flip()
@@ -162,3 +164,28 @@ class Game:
         for wall in self.walls:
             wall_info.append((wall.x, wall.y, wall.width, wall.height))
         return wall_info
+
+
+    def add_trajectory_reward(self, reward):
+        """Add reward based on how close bullets are to the line connecting player to enemies"""
+        enemy_angles = []
+        for enemy in self.tanks:
+            if enemy != self.player_tank:
+                angle = (math.degrees(self.calculate_enemy_angle_from_player((enemy.x, enemy.y)))+90) % 360
+                enemy_angles.append(angle)
+                print(self.player_tank.shooter_angle, angle)
+
+        
+        for angle in enemy_angles:
+            if abs(self.player_tank.shooter_angle - angle) < ANGLE_TOLERANCE:
+                print("ANGLE MATCH")
+                reward += 1
+            else:
+                reward -= 1
+        
+        return reward
+
+    
+    def calculate_enemy_angle_from_player(self, enemy_position):
+        angle = math.atan2(enemy_position[1] - self.player_tank.y, enemy_position[0] - self.player_tank.x)
+        return angle

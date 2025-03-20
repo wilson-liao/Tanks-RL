@@ -77,7 +77,8 @@ class TrainingCallback(Callback):
         # signal.signal(signal.SIGINT, self.interrupt_handler)
     
     def interrupt_handler(self, signum, frame):
-        print('\nTraining interrupted. Saving best weights...')
+        print('\nTraining interrupted. Saving final weights...')
+        self.model.save_weights("final_" + MODEL_SAVE_PATH, overwrite=True)
         self.interrupted = True
     
     def on_episode_end(self, episode, logs={}):
@@ -106,7 +107,7 @@ except Exception as e:
 dqn.fit(env, nb_steps=EPISODES, visualize=False, verbose=1, callbacks=[training_callback])
 
 # Save final weights
-# dqn.save_weights('dqn_final_weights_heuristic_bot.h5f', overwrite=True)
+dqn.save_weights("final_" + MODEL_SAVE_PATH, overwrite=True)
 
 # Test with visualization (using best weights)
 print("\nTesting with best weights:")
