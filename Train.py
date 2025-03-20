@@ -3,6 +3,7 @@ from gym.spaces import Discrete, Box
 import numpy as np
 import random
 import pickle
+import matplotlib.pyplot as plt
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Flatten
@@ -78,6 +79,8 @@ model = build_dueling_model(states, actions)
 # model.summary()
 dqn = build_agent(model, actions)
 dqn.compile(Adam(learning_rate=0.005))
+reward_history = []
+episode_history = []
 
 # Custom callback to save best weights and handle interruption
 class TrainingCallback(Callback):
@@ -92,10 +95,24 @@ class TrainingCallback(Callback):
         print('\nTraining interrupted. Saving best weights...')
         self.interrupted = True
         print("[INFO] Exiting program.")
+        plt.figure(figsize=(10,5))
+        plt.plot(episode_history, reward_history, label="Episode Reward", color="b")
+        plt.xlabel("Episode")
+        plt.ylabel("Total Reward")
+        plt.title("Reward Progression Over Training")
+        plt.legend()
+        plt.grid()
+        plt.show()
+        graph_path = "training_logs/reward_progression.png"
+        plt.savefig(graph_path, dpi=300)
+
         sys.exit(0)
     
     def on_episode_end(self, episode, logs={}):
         episode_reward = logs.get('episode_reward')
+        reward_history.append(episode_reward)
+        episode_history.append(episode)
+
         if episode_reward > self.best_reward:
             self.best_reward = episode_reward
             self.model.save_weights('dqn_best_weights.h5f', overwrite=True)
