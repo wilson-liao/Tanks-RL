@@ -64,8 +64,8 @@ class TankEnv(Env):
 
         # Move forward, move backward, turn left, turn right,
         # turn turret left, turn turret right, shoot, do nothing
-        # self.action_space = Discrete(8)
-        self.action_space = Discrete(3)
+        self.action_space = Discrete(8)
+        # self.action_space = Discrete(3)
         self.skill_level = 0
         self.training_progress = 0
 
@@ -394,7 +394,7 @@ class TankEnv(Env):
     
     def get_all_info(self):
         # Instead of returning a tuple of different structures, create a flat numpy array
-        observation = np.zeros(10, dtype=np.float32)
+        observation = np.zeros(12, dtype=np.float32)
         
         # Player position (2 values)
         player_x, player_y = self.get_player_location()

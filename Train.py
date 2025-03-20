@@ -46,6 +46,7 @@ def build_dueling_model(states, actions):
 
     # Split into Value and Advantage Streams
     value = Dense(1, activation="linear")(x)  # V(s)
+    # print(actions)
     advantage = Dense(actions, activation="linear")(x)  # A(s, a)
 
     # Combine the two streams
@@ -160,12 +161,13 @@ class TrainingCallback(Callback):
         sys.exit(0)
     
     def on_episode_end(self, episode, logs={}):
+        print(logs)
         episode_reward = logs.get('episode_reward')
-        print("REWARD: ",episode_reward)
+        # print("REWARD: ",episode_reward)
         reward_history.append(episode_reward)
         mean_q = logs.get('mean_q')
-        print("MEAN Q: ", mean_q)
-        mean_q_history.append(mean_q)
+        # print("MEAN Q: ", mean_q)
+        # mean_q_history.append(mean_q)
         # episode_history.append(episode)
 
         if episode_reward > self.best_reward:
@@ -175,6 +177,7 @@ class TrainingCallback(Callback):
         
         if self.interrupted:
             self.model.stop_training = True
+    
 
 # Create callback
 training_callback = TrainingCallback()
