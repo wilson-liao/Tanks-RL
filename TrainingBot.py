@@ -8,7 +8,7 @@ DEGREE_TOLERANCE = 2
 class TrainingBot(Tank):
     def __init__(self, game, x, y, color):
         super().__init__(x, y, color)
-        print("Creating training bot 2")
+        # print("Creating training bot 2")
         self.game = game
         self.move_angle = None
         self.action_probabilities = {

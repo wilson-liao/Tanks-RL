@@ -394,7 +394,7 @@ class TankEnv(Env):
     
     def get_all_info(self):
         # Instead of returning a tuple of different structures, create a flat numpy array
-        observation = np.zeros(12, dtype=np.float32)
+        observation = np.zeros(15, dtype=np.float32)
         
         # Player position (2 values)
         player_x, player_y = self.get_player_location()
